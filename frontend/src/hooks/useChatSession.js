@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 
-const API_BASE = '/api/chat';
+const API_BASE = import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL}/api/chat` 
+  : '/api/chat';
 
 export function useChatSession() {
   const [sessionId, setSessionId] = useState('');
