@@ -15,12 +15,6 @@ function getSession(sessionId) {
       subStage: 'PROFILE_GATHERING',
       history: [
         {
-          sender: 'user',
-          text: "Tư vấn với chuyên gia",
-          timestamp: new Date(),
-          stage: 'PRESCREENING'
-        },
-        {
           sender: 'ai',
           text: "Chào bạn! Mình là CareerAI, trợ lý hướng nghiệp cá nhân của bạn. Rất vui được đồng hành cùng bạn trên hành trình định hình tương lai theo mô hình PIC (Sàng lọc - Khám phá - Lựa chọn).\n\nĐể bắt đầu, **vui lòng nhập thông tin hồ sơ học tập và kinh nghiệm của bạn** ở bảng điều khiển bên dưới để mình có cơ sở phân tích và tư vấn chính xác nhất nhé!",
           timestamp: new Date(),
