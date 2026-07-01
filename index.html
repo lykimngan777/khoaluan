@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareerAI - Hướng nghiệp thông minh với AI</title>
+    <meta name="description" content="Trợ lý ảo định hướng nghề nghiệp và xây dựng lộ trình phát triển cá nhân theo mô hình PIC">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome & Lucide Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                            950: '#172554',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-subtle': 'bounceSubtle 2s infinite',
+                    },
+                    keyframes: {
+                        bounceSubtle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-4px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        
+        /* Glassmorphism utility */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        .dark .glass-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Printing styles for Roadmap */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #roadmap-print-area, #roadmap-print-area * {
+                visibility: visible;
+            }
+            #roadmap-print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
+    
+    <!-- Top Progress Line for Active Tab -->
+    <div id="top-progress-bar" class="h-1 bg-gradient-to-r from-brand-500 via-indigo-500 to-purple-600 w-0 transition-all duration-500 fixed top-0 left-0 z-50"></div>
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-brand-500/20 text-white font-outfit font-bold text-xl">
+                        C
+                    </div>
+                    <div>
+                        <span class="font-outfit font-extrabold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-indigo-600 dark:from-brand-400 dark:to-indigo-400">
+                            CareerAI
+                        </span>
+                        <span class="block text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-widest uppercase">PIC Model</span>
+                    </div>
+                </div>
+
+                <!-- Nav Links (Desktop) -->
+                <nav class="hidden md:flex space-x-1 lg:space-x-2">
+                    <button onclick="navigateTo('home')" id="nav-home" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-brand-600 bg-brand-50 dark:text-brand-400 dark:bg-brand-950/50">Trang chủ</button>
+                    <button onclick="navigateTo('assistant')" id="nav-assistant" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-slate-600 hover:text-brand-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-brand-400 dark:hover:bg-slate-800/50">Trợ lý AI</button>
+                    <button onclick="navigateTo('roadmap')" id="nav-roadmap" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-slate-600 hover:text-brand-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-brand-400 dark:hover:bg-slate-800/50">Bảng lộ trình</button>
+                    <button onclick="navigateTo('about')" id="nav-about" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-slate-600 hover:text-brand-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-brand-400 dark:hover:bg-slate-800/50">Giới thiệu</button>
+                </nav>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-3">
+                    <!-- Theme Toggle -->
+                    <button onclick="toggleDarkMode()" class="p-2.5 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 bg-slate-100 dark:bg-slate-800 transition-all" aria-label="Toggle Theme">
+                        <i id="theme-icon" class="fa-solid fa-moon text-base"></i>
+                    </button>
+                    
+                    <!-- Language Indicator -->
+                    <span class="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">VI</span>
+
+                    <!-- Quick Start CTA (Desktop) -->
+                    <button onclick="navigateTo('assistant')" class="hidden sm:inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 shadow-md shadow-brand-500/10 hover:shadow-brand-500/20 active:scale-95 transition-all">
+                        Trải nghiệm ngay
+                    </button>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-all">
+                        <i id="mobile-menu-icon" class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 transition-all">
+            <div class="px-2 pt-2 pb-4 space-y-1 sm:px-3">
+                <button onclick="navigateTo('home'); toggleMobileMenu()" class="w-full text-left block px-3 py-2.5 rounded-lg text-base font-semibold text-brand-600 bg-brand-50 dark:text-brand-400 dark:bg-brand-950/50">Trang chủ</button>
+                <button onclick="navigateTo('assistant'); toggleMobileMenu()" class="w-full text-left block px-3 py-2.5 rounded-lg text-base font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">Trợ lý AI</button>
+                <button onclick="navigateTo('roadmap'); toggleMobileMenu()" class="w-full text-left block px-3 py-2.5 rounded-lg text-base font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">Bảng lộ trình</button>
+                <button onclick="navigateTo('about'); toggleMobileMenu()" class="w-full text-left block px-3 py-2.5 rounded-lg text-base font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">Giới thiệu</button>
+                <button onclick="navigateTo('assistant'); toggleMobileMenu()" class="w-full text-center block px-3 py-3 mt-3 font-semibold text-white bg-gradient-to-r from-brand-600 to-indigo-600 rounded-xl">Bắt đầu ngay</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow flex flex-col">
+        
+        <!-- PAGE 1: HOME -->
+        <section id="page-home" class="tab-content block">
+            <!-- Hero Section -->
+            <div class="relative overflow-hidden bg-white dark:bg-slate-950 py-20 sm:py-28 transition-colors">
+                <!-- Background decorative shapes -->
+                <div class="absolute inset-y-0 w-full h-full pointer-events-none overflow-hidden opacity-30 dark:opacity-20">
+                    <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-brand-400 blur-3xl"></div>
+                    <div class="absolute top-1/2 -left-40 w-[500px] h-[500px] rounded-full bg-purple-400 blur-3xl"></div>
+                </div>
+                
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="text-center max-w-4xl mx-auto">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-50 border border-brand-100 text-brand-700 dark:bg-brand-950/60 dark:border-brand-900/50 dark:text-brand-300 text-xs font-semibold tracking-wide uppercase mb-6 animate-pulse-slow">
+                            <i class="fa-solid fa-sparkles text-[10px]"></i> Trí Tuệ Nhân Tạo Đồng Hành Cùng Bạn
+                        </div>
+                        <h1 class="font-outfit font-extrabold text-4xl sm:text-6xl tracking-tight text-slate-900 dark:text-white leading-none">
+                            Định Hướng Nghề Nghiệp<br/>
+                            <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 dark:from-brand-400 dark:to-purple-400">
+                                Hướng Nghiệp Thông Minh
+                            </span>
+                        </h1>
+                        <p class="mt-6 text-lg sm:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+                            Khám phá bản thân và lập lộ trình phát triển năng lực cá nhân hóa dựa trên mô hình khoa học PIC (Sàng lọc - Khám phá - Lựa chọn).
+                        </p>
+                        
+                        <!-- CTA Buttons -->
+                        <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <button onclick="navigateTo('assistant')" class="w-full sm:w-auto px-8 py-4 text-base font-bold text-white bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 rounded-2xl shadow-xl shadow-brand-500/20 active:scale-95 transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Bắt đầu hướng nghiệp ngay
+                            </button>
+                            <button onclick="navigateTo('about')" class="w-full sm:w-auto px-8 py-4 text-base font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 dark:text-slate-300 dark:bg-slate-900 dark:hover:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-800 transition-all flex items-center justify-center gap-2">
+                                Tìm hiểu mô hình PIC <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Mini Stats or Social Proof -->
+                        <div class="mt-16 pt-8 border-t border-slate-150 dark:border-slate-900 grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
+                            <div>
+                                <span class="block font-outfit text-3xl font-bold text-slate-900 dark:text-white">100%</span>
+                                <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Cá nhân hóa lộ trình</span>
+                            </div>
+                            <div>
+                                <span class="block font-outfit text-3xl font-bold text-slate-900 dark:text-white">PIC Model</span>
+                                <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">Cơ sở lý thuyết vững chắc</span>
+                            </div>
+                            <div class="col-span-2 md:col-span-1">
+                                <span class="block font-outfit text-3xl font-bold text-slate-900 dark:text-white">AI-Powered</span>
+                                <span class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold">GPT-4/Gemini phân tích</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PIC Model Visual Representation -->
+            <div class="bg-slate-100/50 dark:bg-slate-900/30 py-16 border-y border-slate-200 dark:border-slate-900 transition-colors">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center max-w-3xl mx-auto mb-12">
+                        <h2 class="font-outfit text-3xl font-extrabold text-slate-900 dark:text-white">Quy Trình Hướng Nghiệp Chuẩn Khoa Học</h2>
+                        <p class="mt-3 text-slate-600 dark:text-slate-400">Ứng dụng mô hình PIC (Prescreening - In-depth Exploration - Choice) của Giáo sư Itamar Gati để giảm bớt sự quá tải thông tin.</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <!-- Step 1 -->
+                        <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800/80 hover:shadow-md transition-all group">
+                            <div class="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-950 flex items-center justify-center text-brand-600 dark:text-brand-400 mb-6 font-outfit font-bold text-xl group-hover:scale-110 transition-transform">
+                                01
+                            </div>
+                            <h3 class="font-outfit text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+                                Sàng Lọc <span class="text-xs font-normal text-slate-400 dark:text-slate-500">(Prescreening)</span>
+                            </h3>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                                Bạn nêu ra các khía cạnh nghề nghiệp mong muốn (lương, vị trí địa lý, tính sáng tạo...). AI đối chiếu và đề xuất danh sách rút gọn 5-7 nghề phù hợp.
+                            </p>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800/80 hover:shadow-md transition-all group">
+                            <div class="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-6 font-outfit font-bold text-xl group-hover:scale-110 transition-transform">
+                                02
+                            </div>
+                            <h3 class="font-outfit text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+                                Khám Phá <span class="text-xs font-normal text-slate-400 dark:text-slate-500">(In-depth)</span>
+                            </h3>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                                Đi sâu vào từng nghề: xem mô tả công việc, mức lương thực tế, kỹ năng cần có. Trả lời 3 câu hỏi phản biện để sàng lọc kỹ càng, giữ lại 2-3 nghề tâm đắc nhất.
+                            </p>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-100 dark:border-slate-800/80 hover:shadow-md transition-all group">
+                            <div class="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-950 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-6 font-outfit font-bold text-xl group-hover:scale-110 transition-transform">
+                                03
+                            </div>
+                            <h3 class="font-outfit text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+                                Lựa Chọn <span class="text-xs font-normal text-slate-400 dark:text-slate-500">(Choice)</span>
+                            </h3>
+                            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                                So sánh các nghề qua bảng đối chiếu trực quan. AI thiết lập lộ trình phát triển năng lực cá nhân hóa 6-12 tháng (khóa học, chứng chỉ, thực tập) và hỗ trợ tải PDF.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Highlights -->
+            <div class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="font-outfit text-3xl font-extrabold text-slate-900 dark:text-white mb-6">Trải Nghiệm Trực Quan, Tối Ưu Tương Tác</h2>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-600 shrink-0">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-slate-900 dark:text-white">Không lo bí từ với "Gợi ý trả lời nhanh"</h4>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Chatbot cung cấp các nhãn trả lời sẵn giúp bạn phản hồi nhanh chóng mà không cần nhập liệu phức tạp.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center text-blue-600 shrink-0">
+                                    <i class="fa-solid fa-sliders"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-slate-900 dark:text-white">Giao diện kéo trượt trực quan</h4>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Đánh giá các khía cạnh công việc dễ dàng với thanh trượt được nhúng trực tiếp trong phiên chat.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-950/50 flex items-center justify-center text-purple-600 shrink-0">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-slate-900 dark:text-white">Xuất báo cáo PDF chuẩn hóa</h4>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Tải về toàn bộ lộ trình chi tiết bao gồm các liên kết khóa học uy tín để lưu trữ và học tập mọi lúc.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Right Side Mockup Image / Visual -->
+                    <div class="relative bg-gradient-to-tr from-brand-600 to-indigo-700 rounded-3xl p-2 shadow-2xl overflow-hidden aspect-[4/3] flex items-center justify-center">
+                        <div class="absolute inset-0 bg-slate-900/10 backdrop-blur-[1px]"></div>
+                        <div class="bg-white dark:bg-slate-900 w-11/12 h-5/6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 p-4 flex flex-col gap-3 relative overflow-hidden">
+                            <!-- Simulated Chat Bubble -->
+                            <div class="flex gap-2.5 items-start">
+                                <div class="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center text-white text-[10px] shrink-0 font-bold">AI</div>
+                                <div class="bg-slate-100 dark:bg-slate-800 p-2.5 rounded-2xl rounded-tl-none text-xs text-slate-600 dark:text-slate-350 max-w-[80%]">
+                                    Chúc mừng bạn! Mình đã phân tích và thiết lập lộ trình phát triển cho vị trí <b>Data Analyst</b>. Hãy nhấn nút bên dưới để xem chi tiết nhé.
+                                </div>
+                            </div>
+                            <!-- Simulated Component in Chat -->
+                            <div class="bg-brand-50 dark:bg-brand-950/40 p-3 rounded-xl border border-brand-100 dark:border-brand-900/50 flex items-center justify-between text-xs mt-2">
+                                <div class="flex items-center gap-2 text-brand-700 dark:text-brand-300 font-semibold">
+                                    <i class="fa-solid fa-file-circle-check text-base"></i>
+                                    <span>Lộ trình: Data Analyst (6 tháng)</span>
+                                </div>
+                                <button onclick="navigateTo('roadmap')" class="px-3 py-1.5 rounded-lg bg-brand-600 text-white font-medium hover:bg-brand-750 transition-colors">Xem ngay</button>
+                            </div>
+                            
+                            <!-- Floating Card -->
+                            <div class="absolute -bottom-4 -right-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-xl shadow-lg flex items-center gap-2 max-w-[200px]">
+                                <div class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center text-emerald-600 font-bold text-xs"><i class="fa-solid fa-check"></i></div>
+                                <div>
+                                    <div class="text-[10px] text-slate-400 font-semibold uppercase">Tiến trình PIC</div>
+                                    <div class="text-xs font-bold text-slate-800 dark:text-slate-200">Hoàn thành 100%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 2: AI ASSISTANT -->
+        <section id="page-assistant" class="tab-content hidden flex-grow flex flex-col min-h-[calc(100vh-4rem)]">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow flex flex-col w-full">
+                <!-- Page Layout Split -->
+                <div class="grid grid-cols-1 lg:grid-cols-10 gap-6 flex-grow items-stretch">
+                    
+                    <!-- LEFT COLUMN (30% equivalent / 3 cols): PIC Progress & Options Summary -->
+                    <div class="lg:col-span-3 flex flex-col gap-4">
+                        <!-- Progress Card -->
+                        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-colors">
+                            <h3 class="font-outfit font-bold text-lg text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-brand-500"></i> Tiến Trình Hướng Nghiệp
+                            </h3>
+                            
+                            <!-- Stepper -->
+                            <nav aria-label="Progress Stepper" class="space-y-4">
+                                <!-- Stage 1 -->
+                                <div id="step-card-1" class="flex gap-3 items-start p-3 rounded-xl border border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/50 transition-all">
+                                    <div id="step-icon-1" class="w-7 h-7 rounded-full bg-brand-100 text-brand-700 dark:bg-brand-950 dark:text-brand-400 font-semibold text-xs flex items-center justify-center shrink-0">
+                                        1
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                            Sàng Lọc (Prescreening)
+                                            <i id="step-check-1" class="fa-solid fa-circle-check text-emerald-500 hidden text-xs"></i>
+                                        </h4>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Xác định các tiêu chí nghề nghiệp mong muốn</p>
+                                    </div>
+                                </div>
+
+                                <!-- Stage 2 -->
+                                <div id="step-card-2" class="flex gap-3 items-start p-3 rounded-xl border border-transparent transition-all">
+                                    <div id="step-icon-2" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 font-semibold text-xs flex items-center justify-center shrink-0">
+                                        2
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                                            Khám Phá (In-depth)
+                                            <i id="step-check-2" class="fa-solid fa-circle-check text-emerald-500 hidden text-xs"></i>
+                                        </h4>
+                                        <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">Tìm hiểu chi tiết và đặt câu hỏi phản biện</p>
+                                    </div>
+                                </div>
+
+                                <!-- Stage 3 -->
+                                <div id="step-card-3" class="flex gap-3 items-start p-3 rounded-xl border border-transparent transition-all">
+                                    <div id="step-icon-3" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 font-semibold text-xs flex items-center justify-center shrink-0">
+                                        3
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                                            Lộ Trình (Choice)
+                                            <i id="step-check-3" class="fa-solid fa-circle-check text-emerald-500 hidden text-xs"></i>
+                                        </h4>
+                                        <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">Lựa chọn cuối và xây dựng lộ trình học tập</p>
+                                    </div>
+                                </div>
+                            </nav>
+                        </div>
+                        
+                        <!-- Summary Summary Dashboard (Populated by State) -->
+                        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex-grow transition-colors flex flex-col">
+                            <h3 class="font-outfit font-bold text-lg text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                                <i class="fa-solid fa-chart-pie text-brand-500"></i> Tóm Tắt Lựa Chọn
+                            </h3>
+                            
+                            <div id="summary-empty" class="flex-grow flex flex-col items-center justify-center text-center p-6 text-slate-400 dark:text-slate-500">
+                                <i class="fa-regular fa-folder-open text-3xl mb-2"></i>
+                                <p class="text-xs leading-relaxed">Chưa có thông tin. Các tiêu chí và nghề nghiệp được chọn sẽ hiển thị tại đây.</p>
+                            </div>
+                            
+                            <div id="summary-content" class="hidden space-y-4 text-sm flex-grow overflow-y-auto max-h-[300px] lg:max-h-none">
+                                <!-- User name & level -->
+                                <div id="summary-profile-box" class="pb-3 border-b border-slate-100 dark:border-slate-800">
+                                    <div class="text-xs text-slate-400 dark:text-slate-500 font-semibold uppercase">Thông tin</div>
+                                    <div class="font-bold text-slate-800 dark:text-slate-200 mt-0.5" id="summary-profile-name">Nguyễn Văn A</div>
+                                    <div class="text-xs text-slate-500 dark:text-slate-400" id="summary-profile-edu">Sinh viên Đại học</div>
+                                </div>
+                                
+                                <!-- Selected Criteria -->
+                                <div id="summary-criteria-box" class="pb-3 border-b border-slate-100 dark:border-slate-800 hidden">
+                                    <div class="text-xs text-slate-400 dark:text-slate-500 font-semibold uppercase mb-1.5">5 Tiêu chí quan trọng</div>
+                                    <div class="flex flex-wrap gap-1.5" id="summary-criteria-list">
+                                        <!-- Rendered Chips -->
+                                    </div>
+                                </div>
+                                
+                                <!-- Shortlisted Careers -->
+                                <div id="summary-careers-box" class="hidden">
+                                    <div class="text-xs text-slate-400 dark:text-slate-500 font-semibold uppercase mb-1.5">Danh sách nghề đề xuất</div>
+                                    <ul class="space-y-1 text-xs text-slate-700 dark:text-slate-300" id="summary-careers-list">
+                                        <!-- Rendered List -->
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- Control Buttons -->
+                            <div class="pt-4 border-t border-slate-100 dark:border-slate-800 mt-auto flex gap-2">
+                                <button onclick="saveChatSession()" class="flex-1 py-2 px-3 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-floppy-disk"></i> Tạm dừng
+                                </button>
+                                <button onclick="resetChatSession()" class="flex-1 py-2 px-3 text-xs font-semibold rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-950/60 text-rose-600 dark:text-rose-400 transition-colors flex items-center justify-center gap-1.5">
+                                    <i class="fa-solid fa-rotate-right"></i> Đặt lại
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- RIGHT COLUMN (70% equivalent / 7 cols): Chat Window & Input Area -->
+                    <div class="lg:col-span-7 flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden min-h-[500px] lg:min-h-0 relative">
+                        <!-- Chat Header -->
+                        <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/50 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="relative">
+                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-md shadow-brand-500/10">
+                                        <i class="fa-solid fa-robot"></i>
+                                    </div>
+                                    <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900"></span>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-900 dark:text-white leading-tight">Trợ lý CareerAI</h4>
+                                    <p class="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold tracking-wide flex items-center gap-1">
+                                        <span>●</span> Đang trực tuyến
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- Simulation Hint -->
+                            <span class="text-[10px] text-slate-400 bg-slate-100 dark:bg-slate-800 dark:text-slate-500 px-2.5 py-1 rounded-full font-medium">PIC Simulation Mode</span>
+                        </div>
+                        
+                        <!-- Chat Bubbles Area -->
+                        <div id="chat-messages-container" class="flex-grow p-5 overflow-y-auto space-y-4 flex flex-col justify-start">
+                            <!-- Messages get injected dynamically -->
+                        </div>
+                        
+                        <!-- Panel Interceptors (Inline Interactive Components: Criteria, Sliders, Matrix) -->
+                        <div id="chat-interactive-panel" class="px-5 py-4 border-t border-slate-100 dark:border-slate-850 bg-slate-50/30 dark:bg-slate-900/30 hidden transition-all">
+                            <!-- Dynamic Content Inserted Here -->
+                        </div>
+                        
+                        <!-- Quick Reply Chips Area -->
+                        <div id="quick-replies-area" class="px-5 py-3 flex flex-wrap gap-2 border-t border-slate-100 dark:border-slate-855 bg-white dark:bg-slate-900 transition-colors">
+                            <!-- Chips get injected dynamically -->
+                        </div>
+                        
+                        <!-- Chat Input Box -->
+                        <form id="chat-form" onsubmit="handleChatSubmit(event)" class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 transition-all flex items-center gap-3">
+                            <div class="relative flex-grow">
+                                <input id="chat-input" type="text" autocomplete="off" placeholder="Nhập câu trả lời của bạn..." class="w-full pl-4 pr-12 py-3.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-slate-800 dark:text-white shadow-inner transition-colors">
+                                <!-- Send Button -->
+                                <button type="submit" class="absolute right-2.5 top-1/2 -translate-y-1/2 w-9 h-9 rounded-xl bg-brand-600 hover:bg-brand-700 active:scale-95 text-white flex items-center justify-center shadow-lg shadow-brand-500/10 transition-all">
+                                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 3: ROADMAP VIEW -->
+        <section id="page-roadmap" class="tab-content hidden py-8 bg-slate-100/40 dark:bg-slate-950/20 flex-grow transition-colors">
+            <!-- Normal Header State (If no roadmap exists) -->
+            <div id="roadmap-empty-state" class="max-w-3xl mx-auto px-4 py-20 text-center">
+                <div class="w-20 h-20 rounded-3xl bg-slate-100 dark:bg-slate-900 flex items-center justify-center text-slate-400 dark:text-slate-600 mx-auto mb-6">
+                    <i class="fa-solid fa-route text-3xl"></i>
+                </div>
+                <h2 class="font-outfit text-2xl font-bold text-slate-900 dark:text-white mb-2">Chưa có lộ trình phát triển năng lực</h2>
+                <p class="text-slate-500 dark:text-slate-400 mb-6 text-sm max-w-md mx-auto">Hãy hoàn thành cuộc hội thoại với trợ lý AI ở mục "Trợ lý AI" để nhận lộ trình cá nhân hóa dựa trên mô hình PIC.</p>
+                <button onclick="navigateTo('assistant')" class="inline-flex items-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl transition-all shadow-md active:scale-95">
+                    <i class="fa-solid fa-comments"></i> Bắt đầu trò chuyện với AI
+                </button>
+            </div>
+
+            <!-- Full Printable/Exportable Dashboard -->
+            <div id="roadmap-filled-state" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 hidden">
+                <!-- Top Actions Bar -->
+                <div class="no-print flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-600">
+                            <i class="fa-solid fa-circle-check text-lg"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-400 font-semibold uppercase">Trạng thái</span>
+                            <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 leading-tight">Đã sẵn sàng lộ trình học tập</h4>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                        <button onclick="navigateTo('assistant')" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold rounded-xl text-xs transition-colors">
+                            <i class="fa-solid fa-arrow-left"></i> Điều chỉnh lộ trình
+                        </button>
+                        <button onclick="window.print()" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl text-xs transition-all shadow-md active:scale-95">
+                            <i class="fa-solid fa-file-pdf"></i> Xuất PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Printable Container -->
+                <div id="roadmap-print-area" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 sm:p-10 rounded-3xl shadow-sm transition-colors space-y-8">
+                    
+                    <!-- Print-only Header -->
+                    <div class="hidden print:flex justify-between items-center pb-6 border-b border-slate-200 mb-6">
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Báo Cáo Cá Nhân Hóa</span>
+                            <h1 class="text-2xl font-extrabold text-slate-900">CAREERAI - HƯỚNG NGHIỆP THÔNG MINH</h1>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs text-slate-500 font-medium">Áp dụng mô hình PIC</div>
+                            <div class="text-[10px] text-slate-400">careerai.web.demo</div>
+                        </div>
+                    </div>
+
+                    <!-- Roadmap Header Title Block -->
+                    <div class="text-center sm:text-left border-b border-slate-150 dark:border-slate-800 pb-6">
+                        <div class="inline-block px-3 py-1 rounded-full bg-brand-50 text-brand-700 dark:bg-brand-950/60 dark:text-brand-400 text-xs font-semibold mb-3">Lộ trình học tập & phát triển năng lực</div>
+                        <h2 id="roadmap-career-title" class="font-outfit text-3xl font-extrabold text-slate-900 dark:text-white leading-tight">
+                            Lập Trình Viên Front-End (Web Developer)
+                        </h2>
+                        <p id="roadmap-career-desc" class="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-3xl leading-relaxed">
+                            Phụ trách thiết kế giao diện người dùng, đảm bảo hiệu năng và tính tương tác của trang web hoặc ứng dụng. Hợp tác chặt chẽ với UI/UX Designer và Back-End Developer.
+                        </p>
+                    </div>
+
+                    <!-- Layout: Grid for Profile info & Skill Gap -->
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <!-- Personal Info Summary -->
+                        <div class="bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-850 p-5 rounded-2xl shadow-inner">
+                            <h4 class="font-outfit font-bold text-sm text-slate-800 dark:text-slate-200 mb-3 uppercase tracking-wider">Thông Tin Cá Nhân</h4>
+                            <div class="space-y-2.5 text-xs">
+                                <div>
+                                    <span class="text-slate-400 block font-medium">Họ & tên:</span>
+                                    <span id="roadmap-user-name" class="font-semibold text-slate-800 dark:text-slate-200">Nguyễn Văn A</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 block font-medium">Trình độ học vấn:</span>
+                                    <span id="roadmap-user-edu" class="font-semibold text-slate-800 dark:text-slate-200">Sinh viên năm 2</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 block font-medium">Giai đoạn hướng nghiệp:</span>
+                                    <span class="font-semibold text-emerald-600 dark:text-emerald-400">Đã hoàn thành PIC</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Skill Gap Assessment (Comparison with desired role) -->
+                        <div class="md:col-span-2 bg-slate-50 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-850 p-5 rounded-2xl shadow-inner">
+                            <h4 class="font-outfit font-bold text-sm text-slate-800 dark:text-slate-200 mb-3 uppercase tracking-wider">Đối chiếu bộ kỹ năng</h4>
+                            <div class="space-y-3" id="roadmap-skills-gap">
+                                <!-- Dynamic Rendered Skill Bars -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6-Month Timeline -->
+                    <div class="space-y-4">
+                        <h3 class="font-outfit font-bold text-xl text-slate-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-timeline text-brand-500"></i> Lộ Trình Phát Triển Chi Tiết (6 Tháng)
+                        </h3>
+                        
+                        <div class="relative border-l-2 border-brand-100 dark:border-brand-900/50 pl-5 ml-2.5 space-y-8" id="roadmap-timeline">
+                            <!-- Injected Timeline Nodes -->
+                        </div>
+                    </div>
+
+                    <!-- Recommendations (Courses & Certs) -->
+                    <div class="grid md:grid-cols-2 gap-8 border-t border-slate-150 dark:border-slate-800 pt-8">
+                        <!-- Recommended Online Courses -->
+                        <div class="space-y-4">
+                            <h4 class="font-outfit font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                                <i class="fa-solid fa-graduation-cap text-indigo-500"></i> Khóa học trực tuyến khuyên dùng
+                            </h4>
+                            <div class="space-y-3.5" id="roadmap-courses">
+                                <!-- Injected Courses -->
+                            </div>
+                        </div>
+
+                        <!-- Recommended Certifications & Practical Work -->
+                        <div class="space-y-6">
+                            <!-- Certs -->
+                            <div class="space-y-4">
+                                <h4 class="font-outfit font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-award text-amber-500"></i> Chứng chỉ khuyên đạt
+                                </h4>
+                                <ul class="space-y-3 text-xs text-slate-600 dark:text-slate-350" id="roadmap-certs">
+                                    <!-- Injected Certs -->
+                                </ul>
+                            </div>
+                            
+                            <!-- Practical Work -->
+                            <div class="space-y-4 border-t border-slate-100 dark:border-slate-800 pt-4">
+                                <h4 class="font-outfit font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+                                    <i class="fa-solid fa-briefcase text-emerald-500"></i> Hoạt động thực hành đề xuất
+                                </h4>
+                                <ul class="space-y-2.5 text-xs text-slate-600 dark:text-slate-350" id="roadmap-practicals">
+                                    <!-- Injected Practicals -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resources and Networks -->
+                    <div class="border-t border-slate-150 dark:border-slate-800 pt-8 grid sm:grid-cols-2 gap-6 text-xs text-slate-500 dark:text-slate-400">
+                        <div>
+                            <h5 class="font-bold text-slate-800 dark:text-slate-200 mb-2 uppercase tracking-wide">Tài nguyên học tập bổ sung</h5>
+                            <p class="leading-relaxed mb-2">Đọc các tài liệu tham khảo, tham gia các cộng đồng chuyên môn trên Facebook, Discord, LinkedIn để cập nhật thông tin.</p>
+                            <span class="text-brand-600 dark:text-brand-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-circle-nodes"></i> Cộng đồng ngành nghề Việt Nam & Quốc tế</span>
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-slate-800 dark:text-slate-200 mb-2 uppercase tracking-wide">Lời khuyên từ CareerAI</h5>
+                            <p class="leading-relaxed italic">"Để chinh phục lộ trình này hiệu quả, hãy duy trì tính kỷ luật khoảng 10-15 tiếng mỗi tuần. Xây dựng ít nhất 2 dự án cá nhân (Portfolio) và kết nối với 5-10 anh chị đi trước (Mentors) trên LinkedIn."</p>
+                        </div>
+                    </div>
+
+                    <!-- Print-only Footer -->
+                    <div class="hidden print:block text-center pt-8 border-t border-slate-200 text-[9px] text-slate-400">
+                        Bản quyền thuộc về CareerAI - Sinh viên thực hiện Khóa luận tốt nghiệp Đại học © 2026.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PAGE 4: ABOUT -->
+        <section id="page-about" class="tab-content hidden py-12 bg-white dark:bg-slate-950 transition-colors">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+                <!-- Main Header -->
+                <div class="text-center">
+                    <h2 class="font-outfit text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">Giới Thiệu Dự Án & Cơ Sở Lý Thuyết</h2>
+                    <p class="mt-3 text-slate-600 dark:text-slate-400">Tìm hiểu cách CareerAI hoạt động và các tài liệu học thuật đằng sau hệ thống.</p>
+                </div>
+
+                <!-- Thesis Context -->
+                <div class="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-6 rounded-2xl flex flex-col md:flex-row gap-6 items-start">
+                    <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-700 dark:bg-brand-950/60 dark:text-brand-400 flex items-center justify-center shrink-0 text-xl font-bold">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-outfit text-lg font-bold text-slate-900 dark:text-white mb-2">Bối cảnh khóa luận tốt nghiệp</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                            CareerAI được phát triển như một sản phẩm thực nghiệm của Khóa luận tốt nghiệp: <b>"Ứng dụng Trí tuệ Nhân tạo kết hợp Mô hình PIC trong Định hướng Nghề nghiệp & Phát triển Năng lực Cá nhân hóa cho sinh viên Việt Nam"</b>.
+                            Hệ thống giải quyết vấn đề quá tải thông tin, thiếu cấu trúc và tính mơ hồ trong định hướng của sinh viên hiện nay.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- PIC Explanation Section -->
+                <div class="space-y-6">
+                    <h3 class="font-outfit text-2xl font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-diagram-project text-indigo-500"></i> Mô Hình PIC Là Gì?
+                    </h3>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Mô hình <b>PIC (Prescreening, In-depth Exploration, Choice)</b> được đề xuất bởi Giáo sư <b>Itamar Gati</b> và các đồng nghiệp. Đây là một trong những mô hình hướng nghiệp có hệ thống nhất thế giới, chia quá trình ra quyết định thành ba giai đoạn logic:
+                    </p>
+                    
+                    <div class="grid md:grid-cols-3 gap-6 text-sm">
+                        <div class="border border-slate-150 dark:border-slate-800 p-5 rounded-xl">
+                            <h4 class="font-bold text-slate-800 dark:text-slate-200 mb-2">1. Sàng Lọc (Prescreening)</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Người dùng định vị các khía cạnh quan trọng của bản thân để giảm danh sách hàng trăm nghề nghiệp xuống còn một vài nhóm ngành có triển vọng phù hợp.</p>
+                        </div>
+                        <div class="border border-slate-150 dark:border-slate-800 p-5 rounded-xl">
+                            <h4 class="font-bold text-slate-800 dark:text-slate-200 mb-2">2. Khám Phá (In-depth)</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Khám phá chi tiết bộ mô tả công việc, kỹ năng, thói quen và phản biện nghiêm túc sự tương thích cá nhân đối với từng nghề cụ thể.</p>
+                        </div>
+                        <div class="border border-slate-150 dark:border-slate-800 p-5 rounded-xl">
+                            <h4 class="font-bold text-slate-800 dark:text-slate-200 mb-2">3. Lựa Chọn (Choice)</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">So sánh trực quan các nghề vượt qua bước khám phá và chốt phương án tối ưu để xây dựng lộ trình học tập, phát triển năng lực.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Academic Citations -->
+                <div class="space-y-4">
+                    <h3 class="font-outfit text-2xl font-bold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-book-bookmark text-purple-500"></i> Nghiên cứu liên quan & Tài liệu trích dẫn
+                    </h3>
+                    <ul class="space-y-3 text-xs text-slate-600 dark:text-slate-400 list-disc pl-5 leading-relaxed">
+                        <li>
+                            <b>Gati, I., & Asher, I. (2001).</b> Prescreening, in-depth exploration, and choice: From theory to practice in career decision making. <i>Career Development Quarterly</i>, 50(2), 140-157.
+                        </li>
+                        <li>
+                            <b>Bankins, S. (2021).</b> Using AI to support career development: Potential and risks of automated counseling systems. <i>Journal of Career Assessment</i>, 29(4), 587-604.
+                        </li>
+                        <li>
+                            <b>Patel, K., & Patel, M. (2023).</b> Large Language Models (LLMs) in student guidance systems: A comparative review of GPT-4 and custom models in education. <i>Educational Technology & Society</i>, 26(1), 112-125.
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Project Team / Author details -->
+                <div class="grid md:grid-cols-2 gap-6 border-t border-slate-150 dark:border-slate-800 pt-8">
+                    <div>
+                        <h4 class="font-bold text-slate-850 dark:text-slate-200 text-sm uppercase tracking-wider mb-3">Nhóm thực hiện đề tài</h4>
+                        <div class="space-y-2 text-xs">
+                            <p><b class="text-slate-850 dark:text-slate-200">Sinh viên thực hiện:</b> Trần Lê Kim Ngân</p>
+                            <p><b class="text-slate-850 dark:text-slate-200">Mã số sinh viên:</b> 211300XX</p>
+                            <p><b class="text-slate-850 dark:text-slate-200">Giảng viên hướng dẫn:</b> TS. Nguyễn Văn B</p>
+                            <p><b class="text-slate-850 dark:text-slate-200">Khoa / Trường:</b> Công nghệ Thông tin</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-850 dark:text-slate-200 text-sm uppercase tracking-wider mb-3">Liên hệ & Đóng góp ý kiến</h4>
+                        <div class="space-y-3 text-xs">
+                            <p class="flex items-center gap-2"><i class="fa-solid fa-envelope text-brand-500 w-4"></i> email@student.university.edu.vn</p>
+                            <p class="flex items-center gap-2"><i class="fa-brands fa-github text-slate-700 dark:text-slate-400 w-4"></i> github.com/kimngan-careerai</p>
+                            <p class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-rose-500 w-4"></i> TP. Hồ Chí Minh, Việt Nam</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="no-print bg-slate-900 text-slate-400 py-8 border-t border-slate-850 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+            <div class="flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center text-white font-outfit font-bold text-sm">C</div>
+                <span class="font-semibold text-white">CareerAI</span>
+                <span>— Hướng nghiệp thông minh dựa trên mô hình PIC</span>
+            </div>
+            <div class="flex gap-4">
+                <a href="https://github.com" target="_blank" class="hover:text-white transition-colors">Github</a>
+                <a href="#" onclick="navigateTo('about')" class="hover:text-white transition-colors">Tài liệu nghiên cứu</a>
+                <a href="#" onclick="resetChatSession()" class="hover:text-white transition-colors">Đặt lại trợ lý</a>
+            </div>
+            <div class="text-slate-500">
+                © 2026 Trần Lê Kim Ngân. Khóa luận tốt nghiệp.
+            </div>
+        </div>
+    </footer>
+
+    <!-- INLINE SIMULATION JAVASCRIPT LOGIC -->
+    <script>
+        // --- Dark Mode Handler ---
+        function initTheme() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('theme-icon').className = "fa-solid fa-sun text-base text-amber-400";
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('theme-icon').className = "fa-solid fa-moon text-base";
+            }
+        }
+        
+        function toggleDarkMode() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+                document.getElementById('theme-icon').className = "fa-solid fa-moon text-base";
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+                document.getElementById('theme-icon').className = "fa-solid fa-sun text-base text-amber-400";
+            }
+        }
+        
+        // --- Navigation Handler ---
+        function navigateTo(tabId) {
+            // Update tabs visibility
+            document.querySelectorAll('.tab-content').forEach(element => {
+                element.classList.add('hidden');
+                element.classList.remove('block', 'flex-grow', 'flex', 'flex-col');
+            });
+            
+            const targetPage = document.getElementById(`page-${tabId}`);
+            if (tabId === 'assistant') {
+                targetPage.classList.remove('hidden');
+                targetPage.classList.add('block', 'flex-grow', 'flex', 'flex-col');
+            } else {
+                targetPage.classList.remove('hidden');
+                targetPage.classList.add('block');
+            }
+            
+            // Update navigation styles
+            const navBtnIds = ['nav-home', 'nav-assistant', 'nav-roadmap', 'nav-about'];
+            navBtnIds.forEach(id => {
+                const button = document.getElementById(id);
+                if (button) {
+                    if (id === `nav-${tabId}`) {
+                        button.className = "px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-brand-600 bg-brand-50 dark:text-brand-400 dark:bg-brand-950/50";
+                    } else {
+                        button.className = "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-slate-600 hover:text-brand-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-brand-400 dark:hover:bg-slate-800/50";
+                    }
+                }
+            });
+
+            // Update top progress bar width
+            const progressBar = document.getElementById('top-progress-bar');
+            const widths = { 'home': '25%', 'assistant': '50%', 'roadmap': '75%', 'about': '100%' };
+            progressBar.style.width = widths[tabId] || '0%';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- Mobile Menu Toggle ---
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('mobile-menu-icon');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.className = "fa-solid fa-xmark text-xl";
+            } else {
+                menu.classList.add('hidden');
+                icon.className = "fa-solid fa-bars text-xl";
+            }
+        }
+
+        // --- Simulated Database & Datatypes ---
+        const ALL_CRITERIA = [
+            { id: 'salary', label: 'Mức lương', desc: 'Thu nhập khởi điểm & tiềm năng tăng lương', icon: 'fa-hand-holding-dollar', color: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400' },
+            { id: 'wlb', label: 'Cân bằng sống-làm', desc: 'Có thời gian dành cho gia đình, sở thích cá nhân', icon: 'fa-scale-balanced', color: 'bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400' },
+            { id: 'growth', label: 'Cơ hội thăng tiến', desc: 'Lộ trình nghề nghiệp rõ ràng, nâng cao kỹ năng', icon: 'fa-arrow-up-right-dots', color: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400' },
+            { id: 'creativity', label: 'Tính sáng tạo', desc: 'Được tự do đóng góp ý tưởng, không gò bó', icon: 'fa-lightbulb', color: 'bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400' },
+            { id: 'environment', label: 'Môi trường làm việc', desc: 'Đồng nghiệp thân thiện, sếp tâm lý, ít áp lực toxic', icon: 'fa-users', color: 'bg-teal-50 text-teal-600 dark:bg-teal-950/40 dark:text-teal-400' },
+            { id: 'stability', label: 'Sự ổn định', desc: 'Công việc lâu dài, ít biến động sa thải', icon: 'fa-shield-halved', color: 'bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400' },
+            { id: 'social_impact', label: 'Tác động xã hội', desc: 'Công việc tạo ra giá trị tốt đẹp cho cộng đồng', icon: 'fa-earth-americas', color: 'bg-purple-50 text-purple-600 dark:bg-purple-950/40 dark:text-purple-400' },
+            { id: 'flexibility', label: 'Linh hoạt địa điểm', desc: 'Làm việc từ xa (Remote/Hybrid), linh động giờ giấc', icon: 'fa-laptop-house', color: 'bg-cyan-50 text-cyan-600 dark:bg-cyan-950/40 dark:text-cyan-400' }
+        ];
+
+        const CAREER_DATABASE = [
+            {
+                id: 'fe_dev',
+                name: 'Lập trình viên Front-End',
+                category: 'Công nghệ thông tin',
+                desc: 'Phụ trách thiết kế giao diện, đảm bảo hiệu năng và tính tương tác của trang web/ứng dụng. Phối hợp với UI/UX Designer và Back-End Developer.',
+                daily: 'Viết code HTML/CSS/React, sửa lỗi giao diện, tối ưu tốc độ tải trang, thảo luận thiết kế với designer.',
+                skills: 'HTML, CSS, JavaScript, React.js/Vue.js, kỹ năng giải quyết vấn đề, tinh thần làm việc nhóm.',
+                salary: '15,000,000 - 35,000,000 VND / tháng',
+                criteriaRatings: { salary: 8, wlb: 7, growth: 9, creativity: 8, environment: 8, stability: 7, social_impact: 6, flexibility: 9 },
+                roadmap: {
+                    timeline: [
+                        { time: 'Tháng 1-2: Kiến thức nền tảng', details: 'Nắm vững HTML5, CSS3, Flexbox, Grid và xây dựng website tĩnh chuẩn Responsive.' },
+                        { time: 'Tháng 3-4: Lập trình JavaScript chuyên sâu', details: 'Học cú pháp ES6+, xử lý bất đồng bộ (API/Fetch), thao tác DOM và viết dự án ứng dụng nhỏ.' },
+                        { time: 'Tháng 5: Framework hiện đại (ReactJS)', details: 'Làm quen với React components, State/Props, React Hooks (useState, useEffect) và Routing.' },
+                        { time: 'Tháng 6: Dự án thực tế & CV', details: 'Tạo Portfolio cá nhân với 3 dự án trên GitHub, chuẩn bị CV và ứng tuyển thực tập Front-End.' }
+                    ],
+                    courses: [
+                        { name: 'Xây dựng Website với HTML, CSS (F8)', platform: 'fullstack.edu.vn', cost: 'Miễn phí' },
+                        { name: 'Modern JavaScript for Beginners (Udemy)', platform: 'Udemy', cost: '399,000 VND' },
+                        { name: 'React - The Complete Guide (Coursera)', platform: 'Coursera / Meta', cost: 'Miễn phí học thử' }
+                    ],
+                    certs: [
+                        'Meta Front-End Developer Professional Certificate (Coursera)',
+                        'Responsive Web Design Certification (freeCodeCamp)'
+                    ],
+                    practicals: [
+                        'Thiết kế lại giao diện của một trang tin tức lớn tại Việt Nam.',
+                        'Xây dựng ứng dụng Todo-List hoặc Thời tiết kéo dữ liệu từ OpenWeather API.',
+                        'Tham gia dự án mã nguồn mở hoặc làm Freelance nhỏ cho người thân.'
+                    ]
+                }
+            },
+            {
+                id: 'data_analyst',
+                name: 'Chuyên viên Phân tích dữ liệu (Data Analyst)',
+                category: 'Công nghệ thông tin / Kinh tế',
+                desc: 'Thu thập, xử lý và trực quan hóa dữ liệu để giúp doanh nghiệp đưa ra các quyết định chiến lược và tối ưu quy trình vận hành.',
+                daily: 'Trích xuất dữ liệu bằng SQL, làm sạch dữ liệu bằng Python/Excel, xây dựng dashboard báo cáo trên PowerBI/Tableau.',
+                skills: 'SQL, Python (Pandas/NumPy), PowerBI/Tableau, tư duy phân tích, giao tiếp và thuyết trình dữ liệu.',
+                salary: '14,000,000 - 30,000,000 VND / tháng',
+                criteriaRatings: { salary: 8, wlb: 8, growth: 9, creativity: 6, environment: 8, stability: 8, social_impact: 7, flexibility: 7 },
+                roadmap: {
+                    timeline: [
+                        { time: 'Tháng 1-2: Làm chủ SQL & Excel nâng cao', details: 'Học viết truy vấn SQL (SELECT, JOIN, GROUP BY, Subqueries) và làm sạch dữ liệu trong Excel.' },
+                        { time: 'Tháng 3-4: Trực quan hóa dữ liệu', details: 'Sử dụng Power BI hoặc Tableau để kết nối các bảng dữ liệu, thiết kế Dashboard tương tác thông minh.' },
+                        { time: 'Tháng 5: Cơ bản Python cho Data', details: 'Học Python cơ bản, thư viện Pandas để lọc, xử lý dữ liệu lớn, vẽ biểu đồ với Matplotlib/Seaborn.' },
+                        { time: 'Tháng 6: Dự án Capstone & Portfolio', details: 'Lấy bộ dữ liệu thực tế từ Kaggle, thực hiện phân tích, viết báo cáo ngắn và đẩy lên GitHub/Tableau Public.' }
+                    ],
+                    courses: [
+                        { name: 'Google Data Analytics Certificate', platform: 'Coursera', cost: 'Hỗ trợ tài chính/Có phí' },
+                        { name: 'SQL for Data Analysis (Udacity)', platform: 'Udacity', cost: 'Miễn phí' },
+                        { name: 'Phân tích Dữ liệu với Excel & PowerBI', platform: 'Kyna.vn', cost: '450,000 VND' }
+                    ],
+                    certs: [
+                        'Google Data Analytics Professional Certificate',
+                        'Microsoft Certified: Power BI Data Analyst Associate'
+                    ],
+                    practicals: [
+                        'Phân tích bộ dữ liệu doanh thu bán lẻ trên Kaggle và đưa ra 3 đề xuất tối ưu.',
+                        'Tạo Dashboard theo dõi chỉ số COVID-19 hoặc thị trường bất động sản.',
+                        'Tập phân tích dữ liệu khảo sát của lớp học/trường học.'
+                    ]
+                }
+            },
+            {
+                id: 'uiux_designer',
+                name: 'Thiết kế giao diện & Trải nghiệm người dùng (UI/UX Designer)',
+                category: 'Thiết kế / Sáng tạo',
+                desc: 'Thiết kế cấu trúc, luồng đi và hình ảnh của sản phẩm số (App, Web) để mang lại trải nghiệm tiện dụng, thu hút nhất cho người sử dụng.',
+                daily: 'Vẽ phác thảo (wireframe), thiết kế UI chi tiết trên Figma, thực hiện phỏng vấn kiểm thử người dùng (user testing).',
+                skills: 'Sử dụng Figma, kỹ năng nghiên cứu người dùng, thiết kế đồ họa, thấu cảm, tư duy logic.',
+                salary: '12,000,000 - 28,000,000 VND / tháng',
+                criteriaRatings: { salary: 7, wlb: 7, growth: 8, creativity: 10, environment: 8, stability: 7, social_impact: 7, flexibility: 8 },
+                roadmap: {
+                    timeline: [
+                        { time: 'Tháng 1-2: Nguyên lý UX & Sử dụng Figma', details: 'Học luật thiết kế giao diện (cân bằng, phân cấp, khoảng trắng) và sử dụng Figma thành thạo.' },
+                        { time: 'Tháng 3-4: Nghiên cứu người dùng', details: 'Thực hành lập chân dung khách hàng (User Persona), xây dựng bản đồ hành trình (User Journey Map).' },
+                        { time: 'Tháng 5: Thiết kế tương tác & Prototype', details: 'Xây dựng wireframes chất lượng thấp đến cao, học cách tạo Prototype động và hiệu ứng chuyển trang.' },
+                        { time: 'Tháng 6: Case Study Portfolio', details: 'Lập 1 case study hoàn chỉnh giải quyết vấn đề của một app cũ, trình bày trên Behance/Dribbble.' }
+                    ],
+                    courses: [
+                        { name: 'Google UX Design Professional Certificate', platform: 'Coursera', cost: 'Có phí' },
+                        { name: 'UI/UX Design Course - Figma Basics', platform: 'Figma Youtube Channel', cost: 'Miễn phí' },
+                        { name: 'Khóa học thiết kế giao diện chuyên sâu', platform: 'F8 / CoderSchool', cost: 'Miễn phí/Có phí' }
+                    ],
+                    certs: [
+                        'Google UX Design Professional Certificate',
+                        'Interaction Design Foundation (IxDF) Membership'
+                    ],
+                    practicals: [
+                        'Thiết kế lại trải nghiệm đặt món của một ứng dụng giao đồ ăn nội địa.',
+                        'Phát triển UI cho ứng dụng học tập nhỏ dành cho trẻ em.',
+                        'Thực hiện kiểm thử nguyên mẫu Figma với 5 người bạn để lấy feedback sửa đổi.'
+                    ]
+                }
+            },
+            {
+                id: 'digital_marketer',
+                name: 'Chuyên viên Tiếp thị số (Digital Marketer)',
+                category: 'Kinh doanh / Truyền thông',
+                desc: 'Lập kế hoạch, triển khai và đo lường các chiến dịch quảng cáo trực tuyến trên Google, Facebook, TikTok, Email... nhằm thu hút khách hàng cho thương hiệu.',
+                daily: 'Lên ý tưởng bài viết, setup tài khoản quảng cáo, theo dõi chi phí ads, viết kịch bản video ngắn, phân tích phễu chuyển đổi.',
+                skills: 'Sáng tạo nội dung, SEO, chạy Ads (Facebook/Google), phân tích dữ liệu thị trường, nhạy bén xu hướng.',
+                salary: '10,000,000 - 25,000,000 VND / tháng',
+                criteriaRatings: { salary: 7, wlb: 6, growth: 8, creativity: 9, environment: 7, stability: 6, social_impact: 6, flexibility: 7 },
+                roadmap: {
+                    timeline: [
+                        { time: 'Tháng 1-2: Nền tảng Marketing & Content', details: 'Tìm hiểu 4P, phễu marketing, hành trình khách hàng. Luyện tập viết bài chuẩn SEO và kịch bản viral.' },
+                        { time: 'Tháng 3-4: Social Media & Quảng cáo', details: 'Học cách thiết lập và tối ưu chiến dịch quảng cáo cơ bản trên Facebook Ads, TikTok Ads và Google Ads.' },
+                        { time: 'Tháng 5: Đo lường chỉ số & Analytics', details: 'Làm quen với Google Analytics 4, theo dõi tỷ lệ chuyển đổi (CTR, CR), chi phí thu hút khách hàng (CAC).' },
+                        { time: 'Tháng 6: Chiến dịch thực tế', details: 'Nhận ngân sách nhỏ từ một cửa hàng thực tế hoặc tự xây kênh social cá nhân đạt cột mốc lượt xem nhất định.' }
+                    ],
+                    courses: [
+                        { name: 'Google Digital Marketing & E-commerce', platform: 'Coursera', cost: 'Có phí' },
+                        { name: 'Marketing Căn Bản (Kyna.vn)', platform: 'Kyna', cost: '350,000 VND' },
+                        { name: 'Facebook Blueprint & Google Skillshop', platform: 'Meta / Google', cost: 'Miễn phí' }
+                    ],
+                    certs: [
+                        'Google Digital Marketing & E-commerce Professional Certificate',
+                        'Meta Certified Digital Marketing Associate'
+                    ],
+                    practicals: [
+                        'Tự viết 5 bài blog chuẩn SEO về một chủ đề bạn quan tâm.',
+                        'Thử lập kế hoạch marketing 1 tháng cho một thương hiệu startup thời trang.',
+                        'Xây dựng một kênh TikTok cá nhân đạt tối thiểu 1,000 followers.'
+                    ]
+                }
+            },
+            {
+                id: 'content_creator',
+                name: 'Nhà sáng tạo nội dung (Content Creator)',
+                category: 'Truyền thông / Nghệ thuật',
+                desc: 'Tự sản xuất các nội dung bằng văn bản, hình ảnh hoặc video trên các nền tảng mạng xã hội (YouTube, TikTok, Instagram, Blog) để xây dựng thương hiệu cá nhân hoặc làm tiếp thị liên kết.',
+                daily: 'Lên kịch bản video, quay phim, dựng clip bằng CapCut/Premiere, tương tác với người xem, đàm phán hợp đồng nhãn hàng.',
+                skills: 'Quay dựng video, kể chuyện (storytelling), thiết kế cơ bản (Canva), tự tin trước camera, lập kế hoạch.',
+                salary: '8,000,000 - 35,000,000 VND / tháng (phụ thuộc vào lượng người theo dõi)',
+                criteriaRatings: { salary: 7, wlb: 6, growth: 8, creativity: 10, environment: 7, stability: 5, social_impact: 7, flexibility: 10 },
+                roadmap: {
+                    timeline: [
+                        { time: 'Tháng 1-2: Định vị bản thân & Ý tưởng', details: 'Xác định Niche (lĩnh vực thế mạnh), nghiên cứu đối tượng người xem và lên lịch đăng bài 30 ngày.' },
+                        { time: 'Tháng 3-4: Kỹ năng kỹ thuật cơ bản', details: 'Học cách sử dụng CapCut điện thoại/máy tính, nguyên lý ánh sáng, thu âm sạch và thiết kế ảnh bìa Canva.' },
+                        { time: 'Tháng 5: Tối ưu kênh & Thuật toán', details: 'Nắm bắt các luật bản quyền, cách chèn hashtag, SEO video và cách đọc số liệu phân tích kênh.' },
+                        { time: 'Tháng 6: Kiếm tiền & Cộng tác', details: 'Đăng ký tiếp thị liên kết (Affiliate), soạn mẫu Portfolio gửi nhãn hàng để nhận booking tài trợ.' }
+                    ],
+                    courses: [
+                        { name: 'YouTube Creator Academy', platform: 'YouTube', cost: 'Miễn phí' },
+                        { name: 'Kỹ năng Storytelling & Biên kịch video ngắn', platform: 'Udemy', cost: '299,000 VND' },
+                        { name: 'Học CapCut dựng phim triệu view', platform: 'F8 / Tiktok creators', cost: 'Miễn phí' }
+                    ],
+                    certs: [
+                        'HubSpot Content Marketing Certification',
+                        'Google Analytics Certification (để theo dõi blog cá nhân)'
+                    ],
+                    practicals: [
+                        'Xuất bản tối thiểu 15 video ngắn trong 1 tháng đầu tiên.',
+                        'Viết và đăng tải 5 bài viết chuyên sâu trên trang LinkedIn cá nhân.',
+                        'Thiết kế bộ hồ sơ giới thiệu bản thân (Media Kit).'
+                    ]
+                }
+            }
+        ];
+
+        // --- Active Session State ---
+        let sessionState = {
+            stage: 1, // 1: Prescreening, 2: Exploration, 3: Choice/Roadmap
+            userName: '',
+            education: '',
+            selectedCriteria: [], // ids
+            criteriaRatings: {}, // { criteriaId: { ideal: X, min: Y } }
+            shortlistedCareers: [], // Career objects
+            exploredCareers: {}, // { careerId: { answeredQuestions: boolean, answerFeedback: string } }
+            currentExploringIndex: 0,
+            finalSelectedCareer: null,
+            history: [] // Array of messages: { sender: 'ai'|'user', type: 'text'|'interactive', content: string, panelId?: string }
+        };
+
+        // --- Emotion Check Words ---
+        const EMOTION_TRIGGER_WORDS = ["áp lực", "lo lắng", "bế tắc", "trầm cảm", "stress", "mệt mỏi", "buồn chán", "tuyệt vọng", "khủng hoảng"];
+
+        // --- Startup Init ---
+        window.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            loadSessionFromStorage();
+            
+            // If empty, initiate first message
+            if (sessionState.history.length === 0) {
+                initiateWelcome();
+            } else {
+                renderAllMessages();
+                updateProgressSidebar();
+            }
+            
+            lucide.createIcons();
+        });
+
+        // --- Storage Management ---
+        function saveChatSession() {
+            localStorage.setItem('career_ai_session', JSON.stringify(sessionState));
+            alert("Đã lưu tiến trình hội thoại thành công!");
+        }
+
+        function loadSessionFromStorage() {
+            const saved = localStorage.getItem('career_ai_session');
+            if (saved) {
+                try {
+                    sessionState = JSON.parse(saved);
+                } catch (e) {
+                    console.error("Error loading session:", e);
+                }
+            }
+        }
+
+        function resetChatSession() {
+            if (confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử hội thoại và bắt đầu lại từ đầu?")) {
+                localStorage.removeItem('career_ai_session');
+                sessionState = {
+                    stage: 1,
+                    userName: '',
+                    education: '',
+                    selectedCriteria: [],
+                    criteriaRatings: {},
+                    shortlistedCareers: [],
+                    exploredCareers: {},
+                    currentExploringIndex: 0,
+                    finalSelectedCareer: null,
+                    history: []
+                };
+                
+                // Clear UI
+                document.getElementById('chat-messages-container').innerHTML = '';
+                document.getElementById('chat-interactive-panel').innerHTML = '';
+                document.getElementById('chat-interactive-panel').classList.add('hidden');
+                
+                // Reset Roadmap State UI
+                document.getElementById('roadmap-filled-state').classList.add('hidden');
+                document.getElementById('roadmap-empty-state').classList.remove('hidden');
+                
+                initiateWelcome();
+                updateProgressSidebar();
+            }
+        }
+
+        // --- Render Helpers ---
+        function appendMessage(sender, content, type = 'text', interactiveHtml = '') {
+            const container = document.getElementById('chat-messages-container');
+            
+            const messageObj = { sender, content, type, interactiveHtml };
+            sessionState.history.push(messageObj);
+            
+            const bubble = createMessageBubble(sender, content, type, interactiveHtml);
+            container.appendChild(bubble);
+            container.scrollTop = container.scrollHeight;
+            
+            // Save state updates
+            localStorage.setItem('career_ai_session', JSON.stringify(sessionState));
+        }
+
+        function createMessageBubble(sender, content, type = 'text', interactiveHtml = '') {
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.className = `flex gap-3 items-start max-w-[85%] ${sender === 'user' ? 'self-end flex-row-reverse' : 'self-start'}`;
+            
+            const avatar = document.createElement('div');
+            if (sender === 'user') {
+                avatar.className = "w-8 h-8 rounded-xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-350 text-xs shrink-0 font-semibold";
+                avatar.innerHTML = '<i class="fa-solid fa-user"></i>';
+            } else {
+                avatar.className = "w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white text-xs shrink-0 font-bold";
+                avatar.innerHTML = '<i class="fa-solid fa-robot"></i>';
+            }
+            
+            const contentBox = document.createElement('div');
+            if (sender === 'user') {
+                contentBox.className = "bg-gradient-to-r from-brand-600 to-indigo-600 text-white p-3.5 rounded-2xl rounded-tr-none text-sm shadow-md shadow-brand-500/5 leading-relaxed";
+            } else {
+                contentBox.className = "bg-white dark:bg-slate-800 border border-slate-150 dark:border-slate-800 text-slate-850 dark:text-slate-100 p-3.5 rounded-2xl rounded-tl-none text-sm shadow-sm leading-relaxed space-y-3";
+            }
+            
+            // Format HTML linebreaks and bold tags in simulator responses
+            let textFormatted = content;
+            if (sender === 'ai') {
+                textFormatted = textFormatted.replace(/\n/g, '<br/>');
+            }
+            
+            contentBox.innerHTML = `<div>${textFormatted}</div>`;
+            
+            if (interactiveHtml) {
+                const innerPanel = document.createElement('div');
+                innerPanel.className = "mt-3 pt-3 border-t border-slate-100 dark:border-slate-700/80";
+                innerPanel.innerHTML = interactiveHtml;
+                contentBox.appendChild(innerPanel);
+            }
+            
+            bubbleDiv.appendChild(avatar);
+            bubbleDiv.appendChild(contentBox);
+            
+            return bubbleDiv;
+        }
+
+        function renderAllMessages() {
+            const container = document.getElementById('chat-messages-container');
+            container.innerHTML = '';
+            sessionState.history.forEach(msg => {
+                const bubble = createMessageBubble(msg.sender, msg.content, msg.type, msg.interactiveHtml);
+                container.appendChild(bubble);
+            });
+            container.scrollTop = container.scrollHeight;
+            updateQuickReplies();
+        }
+
+        // --- Core PIC Flow Controller (State Machine Simulator) ---
+        
+        // Welcome Init
+        function initiateWelcome() {
+            const text = "Chào bạn! Mình là <b>CareerAI</b>, trợ lý ảo định hướng nghề nghiệp của bạn.\n\nĐể bắt đầu buổi định hướng cá nhân hóa dựa trên mô hình khoa học <b>PIC</b>, hãy cho mình biết <b>Họ tên</b> và <b>Trình độ học vấn/Ngành học hiện tại</b> của bạn nhé!";
+            appendMessage('ai', text);
+            updateQuickReplies(["Nguyễn Văn A - Sinh viên CNTT", "Trần Thị B - Học sinh Lớp 12", "Lê Văn C - Người đi làm (Marketing)"]);
+        }
+
+        // Handle User Inputs & Determine Logic Step
+        function processUserInput(text) {
+            // Check emotion warning first
+            const hasNegativeEmotion = EMOTION_TRIGGER_WORDS.some(word => text.toLowerCase().includes(word));
+            if (hasNegativeEmotion) {
+                appendMessage('ai', "⚠️ <b>Hỗ trợ tâm lý:</b> Mình nhận thấy bạn đang có dấu hiệu căng thẳng hoặc áp lực. Hướng nghiệp là hành trình lâu dài, sức khỏe tinh thần của bạn mới là quan trọng nhất. Nếu cảm thấy quá tải, bạn nên trò chuyện cùng chuyên gia hoặc gọi đến Đường dây nóng hỗ trợ tâm lý <b>1900 2626</b> nhé. Mình vẫn luôn sẵn sàng hỗ trợ thông tin nghề nghiệp cho bạn.");
+            }
+
+            // Stage 1: Prescreening - Set up Name & major
+            if (sessionState.stage === 1 && !sessionState.userName) {
+                // Try parse name & edu
+                const parts = text.split('-');
+                sessionState.userName = parts[0] ? parts[0].trim() : text;
+                sessionState.education = parts[1] ? parts[1].trim() : "Học sinh/Sinh viên";
+                
+                updateProgressSidebar();
+                
+                appendMessage('user', text);
+                
+                // Ask for criteria selection
+                setTimeout(() => {
+                    const aiText = `Chào <b>${sessionState.userName}</b>! Rất vui được đồng hành cùng bạn.\n\nBước đầu tiên của mô hình PIC là <b>Sàng lọc (Prescreening)</b>. Để tìm kiếm ngành nghề tương thích, bạn hãy chọn đúng <b>5 khía cạnh nghề nghiệp</b> mà bạn cảm thấy quan trọng nhất với mình trong bảng bên dưới nhé.`;
+                    
+                    // Generate criteria grid html
+                    let gridHtml = `<div class="grid grid-cols-2 gap-2 mt-2">`;
+                    ALL_CRITERIA.forEach(c => {
+                        gridHtml += `
+                            <button id="btn-crit-${c.id}" onclick="selectCriteria('${c.id}')" class="p-3 text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-850 hover:border-brand-500 transition-all flex flex-col gap-1.5 cursor-pointer">
+                                <span class="text-xs font-bold flex items-center gap-1.5"><i class="fa-solid ${c.icon}"></i> ${c.label}</span>
+                                <span class="text-[10px] text-slate-400 dark:text-slate-500 leading-tight">${c.desc}</span>
+                            </button>
+                        `;
+                    });
+                    gridHtml += `</div>`;
+                    gridHtml += `
+                        <div class="mt-3 text-right">
+                            <button id="btn-submit-criteria" onclick="submitCriteria()" disabled class="px-4 py-2 text-xs font-bold bg-slate-200 text-slate-400 dark:bg-slate-800 dark:text-slate-600 rounded-lg cursor-not-allowed transition-all">Xác nhận tiêu chí (0/5)</button>
+                        </div>
+                    `;
+                    
+                    appendMessage('ai', aiText, 'interactive', gridHtml);
+                    updateQuickReplies([]);
+                }, 800);
+                return;
+            }
+            
+            // Standard Text Responses depending on stage if user types anything manually
+            appendMessage('user', text);
+            
+            setTimeout(() => {
+                if (sessionState.stage === 1) {
+                    appendMessage('ai', "Xin vui lòng thực hiện lựa chọn các tiêu chí hoặc thanh trượt ở trên để tiếp tục sàng lọc.");
+                } else if (sessionState.stage === 2) {
+                    // Explored career reflection questions handler
+                    const index = sessionState.currentExploringIndex;
+                    const career = sessionState.shortlistedCareers[index];
+                    
+                    sessionState.exploredCareers[career.id] = {
+                        answeredQuestions: true,
+                        answerFeedback: text
+                    };
+                    
+                    appendMessage('ai', `Cảm ơn chia sẻ của bạn về nghề <b>${career.name}</b>. Ý kiến của bạn đã được ghi nhận vào bảng tóm tắt.\n\nBạn cảm thấy thế nào? Bạn muốn <b>giữ lại</b> nghề này để tiếp tục lập lộ trình hay muốn <b>loại bỏ</b>?`, 'interactive', `
+                        <div class="flex gap-2">
+                            <button onclick="handleCareerVerdict('${career.id}', true)" class="flex-1 py-2 bg-emerald-600 text-white rounded-lg text-xs font-bold hover:bg-emerald-700 active:scale-95 transition-all">Giữ nghề này</button>
+                            <button onclick="handleCareerVerdict('${career.id}', false)" class="flex-1 py-2 bg-rose-600 text-white rounded-lg text-xs font-bold hover:bg-rose-700 active:scale-95 transition-all">Loại bỏ nghề này</button>
+                        </div>
+                    `);
+                    updateQuickReplies(["Mình sẵn sàng đáp ứng yêu cầu", "Có vẻ không phù hợp lắm", "Áp lực quá lớn"]);
+                } else if (sessionState.stage === 3) {
+                    if (!sessionState.finalSelectedCareer) {
+                        appendMessage('ai', "Vui lòng chọn 1 nghề cuối cùng trong bảng so sánh để mình lập lộ trình chi tiết nhé.");
+                    } else {
+                        // User asks roadmap barriers
+                        if (text.toLowerCase().includes("tài chính") || text.toLowerCase().includes("tiền") || text.toLowerCase().includes("học phí") || text.toLowerCase().includes("đắt")) {
+                            appendMessage('ai', "Hiểu được khó khăn tài chính của bạn, mình đã cập nhật lộ trình với các khóa học thay thế <b>100% miễn phí</b> trên F8 (fullstack.edu.vn), YouTube, và các học bổng hỗ trợ tài chính từ Coursera. Bạn có thể nhấn 'Xem lộ trình chi tiết' để cập nhật.");
+                            updateRoadmapView(true); // Economical roadmap version
+                        } else {
+                            appendMessage('ai', "Tuyệt vời! Bạn hãy nhấn vào nút <b>'Xem lộ trình chi tiết'</b> bên dưới hoặc chuyển sang tab <b>'Bảng lộ trình'</b> trên thanh điều hướng để xem kế hoạch học tập chi tiết của bạn.");
+                        }
+                    }
+                }
+            }, 800);
+        }
+
+        // --- Stage 1: Criteria Actions ---
+        let selectedCriteriaList = [];
+
+        function selectCriteria(critId) {
+            const index = selectedCriteriaList.indexOf(critId);
+            const button = document.getElementById(`btn-crit-${critId}`);
+            
+            if (index > -1) {
+                selectedCriteriaList.splice(index, 1);
+                button.className = "p-3 text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:border-brand-500 transition-all flex flex-col gap-1.5 cursor-pointer";
+            } else {
+                if (selectedCriteriaList.length >= 5) {
+                    alert("Bạn chỉ được chọn tối đa 5 tiêu chí để tối ưu hóa việc sàng lọc.");
+                    return;
+                }
+                selectedCriteriaList.push(critId);
+                button.className = "p-3 text-left rounded-xl border-2 border-brand-600 dark:border-brand-400 bg-brand-50/50 dark:bg-brand-950/40 transition-all flex flex-col gap-1.5 cursor-pointer";
+            }
+            
+            // Update Submit button state
+            const submitBtn = document.getElementById('btn-submit-criteria');
+            if (submitBtn) {
+                submitBtn.innerText = `Xác nhận tiêu chí (${selectedCriteriaList.length}/5)`;
+                if (selectedCriteriaList.length === 5) {
+                    submitBtn.disabled = false;
+                    submitBtn.className = "px-4 py-2 text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white rounded-lg cursor-pointer transition-all active:scale-95";
+                } else {
+                    submitBtn.disabled = true;
+                    submitBtn.className = "px-4 py-2 text-xs font-bold bg-slate-200 text-slate-400 dark:bg-slate-800 dark:text-slate-600 rounded-lg cursor-not-allowed transition-all";
+                }
+            }
+        }
+
+        function submitCriteria() {
+            sessionState.selectedCriteria = [...selectedCriteriaList];
+            
+            // Clean active chat panel buttons
+            const panelSubmitBtn = document.getElementById('btn-submit-criteria');
+            if (panelSubmitBtn) {
+                panelSubmitBtn.outerHTML = '<span class="text-xs font-semibold text-emerald-600"><i class="fa-solid fa-circle-check"></i> Đã chọn tiêu chí</span>';
+            }
+            
+            updateProgressSidebar();
+            
+            // Next message: Ask for Ideal & Minimum values
+            setTimeout(() => {
+                const text = "Tuyệt vời! Bây giờ, hãy chấm điểm mức độ <b>Lý tưởng (Ideal)</b> và <b>Tối thiểu chấp nhận được (Minimum)</b> cho từng tiêu chí trên thang điểm 1-10 bằng các thanh trượt bên dưới nhé.";
+                
+                let sliderHtml = `<div class="space-y-4 my-3 bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-100 dark:border-slate-800">`;
+                sessionState.selectedCriteria.forEach(critId => {
+                    const c = ALL_CRITERIA.find(x => x.id === critId);
+                    sliderHtml += `
+                        <div class="space-y-1">
+                            <div class="text-xs font-bold text-slate-700 dark:text-slate-350 flex justify-between">
+                                <span><i class="fa-solid ${c.icon}"></i> ${c.label}</span>
+                                <span class="text-[10px] text-slate-400">Min - Lý tưởng</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs font-bold text-brand-600 w-4" id="val-min-${critId}">5</span>
+                                <input type="range" min="1" max="10" value="5" class="flex-grow accent-brand-500 h-1" oninput="document.getElementById('val-min-${critId}').innerText=this.value">
+                                <span class="text-slate-300">|</span>
+                                <input type="range" min="1" max="10" value="8" class="flex-grow accent-indigo-500 h-1" oninput="document.getElementById('val-ideal-${critId}').innerText=this.value">
+                                <span class="text-xs font-bold text-indigo-600 w-4" id="val-ideal-${critId}">8</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                sliderHtml += `</div>`;
+                sliderHtml += `
+                    <div class="text-right">
+                        <button id="btn-submit-ratings" onclick="submitRatings()" class="px-4 py-2 text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white rounded-lg active:scale-95 transition-all">Tính toán ngành nghề phù hợp</button>
+                    </div>
+                `;
+                
+                appendMessage('ai', text, 'interactive', sliderHtml);
+            }, 500);
+        }
+
+        // --- Stage 1: Ratings Submission & Core Matching algorithm ---
+        function submitRatings() {
+            // Read values
+            sessionState.selectedCriteria.forEach(critId => {
+                const minVal = parseInt(document.getElementById(`val-min-${critId}`).innerText);
+                const idealVal = parseInt(document.getElementById(`val-ideal-${critId}`).innerText);
+                sessionState.criteriaRatings[critId] = { min: minVal, ideal: idealVal };
+            });
+            
+            // Clean action
+            const ratingsBtn = document.getElementById('btn-submit-ratings');
+            if (ratingsBtn) {
+                ratingsBtn.outerHTML = '<span class="text-xs font-semibold text-emerald-600"><i class="fa-solid fa-circle-check"></i> Đã gửi điểm số</span>';
+            }
+            
+            // Calculate matches based on criteria ratings matching databases
+            // Sorting DB by matching distance
+            let scoredCareers = CAREER_DATABASE.map(c => {
+                let score = 0;
+                sessionState.selectedCriteria.forEach(critId => {
+                    const req = c.criteriaRatings[critId] || 5; // Default database value if missing
+                    const userRating = sessionState.criteriaRatings[critId];
+                    // Score increases if career rating is within min and ideal range
+                    if (req >= userRating.min && req <= userRating.ideal) {
+                        score += 3;
+                    } else if (req > userRating.ideal) {
+                        score += 2; // Exceeds expectation
+                    } else {
+                        score += 1; // Below minimum
+                    }
+                });
+                return { ...c, matchScore: score };
+            });
+            
+            scoredCareers.sort((a, b) => b.matchScore - a.matchScore);
+            sessionState.shortlistedCareers = scoredCareers.slice(0, 5); // Pick top 5
+            
+            updateProgressSidebar();
+            
+            setTimeout(() => {
+                let listText = "Dựa trên kết quả phân tích thuật toán, đây là <b>5 nghề nghiệp tương thích nhất</b> với các tiêu chí của bạn:\n\n";
+                sessionState.shortlistedCareers.forEach((c, i) => {
+                    listText += `<b>${i+1}. ${c.name}</b> (${c.category})\n`;
+                });
+                listText += "\nBạn có muốn <b>thêm bớt nghề nào</b> không? Nếu danh sách này đã tốt, hãy nhấn nút bên dưới để chuyển sang giai đoạn <b>Khám Phá Chuyên Sâu (In-depth)</b> nhé.";
+                
+                let actionHtml = `
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <button onclick="goToStage2()" class="flex-grow py-2.5 bg-gradient-to-r from-brand-600 to-indigo-600 text-white rounded-xl text-xs font-bold hover:from-brand-700 hover:to-indigo-700 active:scale-95 transition-all flex items-center justify-center gap-1.5"><i class="fa-solid fa-arrow-right"></i> Đồng ý & Sang Giai đoạn 2</button>
+                    </div>
+                `;
+                appendMessage('ai', listText, 'interactive', actionHtml);
+            }, 600);
+        }
+
+        // --- Stage 2: Exploration logic ---
+        function goToStage2() {
+            sessionState.stage = 2;
+            sessionState.currentExploringIndex = 0;
+            
+            // Mark step 1 completed
+            document.getElementById('step-icon-1').className = "w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 font-semibold text-xs flex items-center justify-center shrink-0";
+            document.getElementById('step-icon-1').innerHTML = '<i class="fa-solid fa-check"></i>';
+            document.getElementById('step-check-1').classList.remove('hidden');
+            
+            // Highlight step 2
+            document.getElementById('step-card-2').classList.add('bg-slate-50/50', 'dark:bg-slate-900/50', 'border-slate-100', 'dark:border-slate-800/80');
+            document.getElementById('step-icon-2').className = "w-7 h-7 rounded-full bg-brand-100 text-brand-700 dark:bg-brand-950 dark:text-brand-400 font-semibold text-xs flex items-center justify-center shrink-0";
+            
+            updateProgressSidebar();
+            exploreNextCareer();
+        }
+
+        function exploreNextCareer() {
+            const index = sessionState.currentExploringIndex;
+            
+            if (index >= sessionState.shortlistedCareers.length) {
+                // Done exploring all careers
+                endStage2();
+                return;
+            }
+            
+            const career = sessionState.shortlistedCareers[index];
+            
+            setTimeout(() => {
+                const text = `Chúng ta bước vào **Giai đoạn 2: Khám phá chuyên sâu**. Đầu tiên là nghề thứ ${index + 1}: **${career.name}**.\n\nDưới đây là thông tin chi tiết về hoạt động hàng ngày và yêu cầu chuyên môn của nghề:`;
+                
+                let detailsCard = `
+                    <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-4 rounded-xl text-xs space-y-2.5 my-2">
+                        <div>
+                            <span class="font-bold text-brand-600 block"><i class="fa-solid fa-briefcase"></i> Mô tả hoạt động tiêu biểu:</span>
+                            <p class="text-slate-600 dark:text-slate-350">${career.daily}</p>
+                        </div>
+                        <div>
+                            <span class="font-bold text-indigo-600 block"><i class="fa-solid fa-graduation-cap"></i> Yêu cầu kỹ năng & học vấn:</span>
+                            <p class="text-slate-600 dark:text-slate-350">${career.skills}</p>
+                        </div>
+                        <div>
+                            <span class="font-bold text-emerald-600 block"><i class="fa-solid fa-money-bill-wave"></i> Thu nhập tham khảo (VN):</span>
+                            <p class="text-slate-600 dark:text-slate-350 font-semibold">${career.salary} <span class="text-[10px] text-slate-400 font-normal italic">(Dữ liệu ước lượng tại thị trường VN)</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 text-slate-700 dark:text-slate-350">
+                        <b>Câu hỏi phản biện:</b><br/>
+                        1. Bạn có hứng thú làm công việc hàng ngày như vậy không?<br/>
+                        2. Bạn sẵn sàng học các kỹ năng được yêu cầu ở trên chứ?<br/>
+                        3. Có khía cạnh nào khiến bạn cảm thấy e ngại hay lo lắng không?
+                    </div>
+                `;
+                
+                appendMessage('ai', text, 'interactive', detailsCard);
+                updateQuickReplies(["Mình hứng thú và sẵn sàng học hỏi!", "Kỹ năng này hơi khó, nhưng mình sẽ cố gắng", "Mình hơi e ngại mức độ áp lực công việc"]);
+            }, 500);
+        }
+
+        function handleCareerVerdict(careerId, keep) {
+            // Find career
+            const career = CAREER_DATABASE.find(x => x.id === careerId);
+            
+            if (!keep) {
+                // Remove from shortlist
+                sessionState.shortlistedCareers = sessionState.shortlistedCareers.filter(x => x.id !== careerId);
+            } else {
+                // Kept
+                if (!sessionState.exploredCareers[careerId]) {
+                    sessionState.exploredCareers[careerId] = { Kept: true };
+                } else {
+                    sessionState.exploredCareers[careerId].Kept = true;
+                }
+            }
+            
+            updateProgressSidebar();
+            
+            // Move index
+            sessionState.currentExploringIndex++;
+            exploreNextCareer();
+        }
+
+        function endStage2() {
+            // If less than 2 careers are left, make sure at least the kept ones or first ones remain
+            if (sessionState.shortlistedCareers.length === 0) {
+                sessionState.shortlistedCareers = [CAREER_DATABASE[0], CAREER_DATABASE[1]];
+            }
+            
+            // Complete step 2
+            document.getElementById('step-icon-2').className = "w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 font-semibold text-xs flex items-center justify-center shrink-0";
+            document.getElementById('step-icon-2').innerHTML = '<i class="fa-solid fa-check"></i>';
+            document.getElementById('step-check-2').classList.remove('hidden');
+            
+            // Highlight step 3
+            document.getElementById('step-card-3').classList.add('bg-slate-50/50', 'dark:bg-slate-900/50', 'border-slate-100', 'dark:border-slate-800/80');
+            document.getElementById('step-icon-3').className = "w-7 h-7 rounded-full bg-brand-100 text-brand-700 dark:bg-brand-950 dark:text-brand-400 font-semibold text-xs flex items-center justify-center shrink-0";
+            
+            sessionState.stage = 3;
+            updateProgressSidebar();
+            
+            setTimeout(() => {
+                let text = "Hoàn thành giai đoạn khám phá chuyên sâu! Bây giờ chúng ta bước vào **Giai đoạn 3: Lựa chọn cuối cùng (Choice)**.\n\nHãy xem bảng so sánh các khía cạnh nghề nghiệp dựa trên các tiêu chí bạn chọn ban đầu:";
+                
+                // Build matrix table
+                let matrixHtml = `
+                    <div class="overflow-x-auto my-3 border border-slate-200 dark:border-slate-700 rounded-xl">
+                        <table class="w-full text-xs text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold border-b border-slate-200 dark:border-slate-700">
+                                    <th class="p-2 border-r border-slate-200 dark:border-slate-700">Tiêu chí</th>
+                                    <th class="p-2 text-center border-r border-slate-200 dark:border-slate-700">Mức của bạn (Min-Ideal)</th>
+                `;
+                
+                sessionState.shortlistedCareers.forEach(c => {
+                    matrixHtml += `<th class="p-2 text-center">${c.name}</th>`;
+                });
+                
+                matrixHtml += `</tr></thead><tbody>`;
+                
+                sessionState.selectedCriteria.forEach(critId => {
+                    const c = ALL_CRITERIA.find(x => x.id === critId);
+                    const userVal = sessionState.criteriaRatings[critId];
+                    
+                    matrixHtml += `
+                        <tr class="border-b border-slate-100 dark:border-slate-800 text-slate-650 dark:text-slate-350">
+                            <td class="p-2 font-bold border-r border-slate-200 dark:border-slate-700"><i class="fa-solid ${c.icon}"></i> ${c.label}</td>
+                            <td class="p-2 text-center font-semibold border-r border-slate-200 dark:border-slate-700 text-brand-600 dark:text-brand-400">${userVal.min}-${userVal.ideal}</td>
+                    `;
+                    
+                    sessionState.shortlistedCareers.forEach(career => {
+                        const score = career.criteriaRatings[critId] || 5;
+                        const matchStyle = score >= userVal.min && score <= userVal.ideal 
+                            ? 'text-emerald-600 dark:text-emerald-400 font-bold' 
+                            : (score > userVal.ideal ? 'text-indigo-600 dark:text-indigo-400 font-bold' : 'text-slate-400 dark:text-slate-600');
+                        matrixHtml += `<td class="p-2 text-center ${matchStyle}">${score}/10</td>`;
+                    });
+                    
+                    matrixHtml += `</tr>`;
+                });
+                
+                matrixHtml += `</tbody></table></div>`;
+                
+                matrixHtml += `<div class="mt-4 text-slate-800 dark:text-slate-250">Dựa vào bảng so sánh trên, <b>ngành nghề nào bạn muốn chọn</b> làm định hướng nghề nghiệp chính để thiết lập lộ trình phát triển năng lực?</div>`;
+                
+                // Select final career button grid
+                matrixHtml += `<div class="grid grid-cols-2 gap-2 mt-3">`;
+                sessionState.shortlistedCareers.forEach(c => {
+                    matrixHtml += `
+                        <button onclick="handleFinalCareerChoice('${c.id}')" class="p-3 text-center bg-slate-50 dark:bg-slate-800 hover:bg-brand-50 dark:hover:bg-brand-950/40 border border-slate-200 dark:border-slate-700 hover:border-brand-600 text-slate-800 dark:text-white rounded-xl text-xs font-bold transition-all cursor-pointer">
+                            ${c.name}
+                        </button>
+                    `;
+                });
+                matrixHtml += `</div>`;
+                
+                appendMessage('ai', text, 'interactive', matrixHtml);
+                updateQuickReplies([]);
+            }, 600);
+        }
+
+        // --- Stage 3: Final Choice ---
+        function handleFinalCareerChoice(careerId) {
+            const career = CAREER_DATABASE.find(x => x.id === careerId);
+            sessionState.finalSelectedCareer = career;
+            
+            // Mark step 3 completed
+            document.getElementById('step-icon-3').className = "w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400 font-semibold text-xs flex items-center justify-center shrink-0";
+            document.getElementById('step-icon-3').innerHTML = '<i class="fa-solid fa-check"></i>';
+            document.getElementById('step-check-3').classList.remove('hidden');
+            
+            updateProgressSidebar();
+            
+            // Generate detailed roadmap data structure for Roadmap page view
+            updateRoadmapView(false); // standard version
+            
+            setTimeout(() => {
+                const text = `Chúc mừng bạn! Lựa chọn định hướng của bạn là: **${career.name}**.\n\nCareerAI đã phân tích kỹ năng hiện tại của bạn đối chiếu với yêu cầu thực tế và thiết lập một **Lộ trình phát triển năng lực 6 tháng** dành riêng cho bạn.\n\nLộ trình bao gồm danh sách các khóa học hàng đầu, các chứng chỉ chuyên nghiệp và dự án thực tế để xây dựng portfolio.`;
+                
+                let linkButtonHtml = `
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <button onclick="navigateTo('roadmap')" class="flex-grow py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl text-xs font-bold hover:from-emerald-700 hover:to-teal-700 shadow-md active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i class="fa-solid fa-map-location-dot"></i> Xem bảng lộ trình chi tiết
+                        </button>
+                    </div>
+                    <div class="mt-2 text-[11px] text-slate-400 dark:text-slate-500">
+                        *Nếu bạn thấy lộ trình có rào cản về chi phí học tập, hãy gõ <b>"lo ngại tài chính"</b> để đổi sang phiên bản các khóa học miễn phí nhé.
+                    </div>
+                `;
+                appendMessage('ai', text, 'interactive', linkButtonHtml);
+                updateQuickReplies(["Xem lộ trình học", "Tôi lo ngại tài chính", "Cảm ơn AI rất nhiều!"]);
+            }, 600);
+        }
+
+        // --- Render Roadmap Page Data ---
+        function updateRoadmapView(economical = false) {
+            const career = sessionState.finalSelectedCareer;
+            if (!career) return;
+            
+            // Show filled, hide empty
+            document.getElementById('roadmap-empty-state').classList.add('hidden');
+            document.getElementById('roadmap-filled-state').classList.remove('hidden');
+            
+            // Title & description
+            document.getElementById('roadmap-career-title').innerText = career.name;
+            document.getElementById('roadmap-career-desc').innerText = career.desc;
+            
+            // Profile Info
+            document.getElementById('roadmap-user-name').innerText = sessionState.userName || "Nguyễn Văn A";
+            document.getElementById('roadmap-user-edu').innerText = sessionState.education || "Sinh viên";
+            
+            // Render Skill Gaps
+            const skillGapContainer = document.getElementById('roadmap-skills-gap');
+            skillGapContainer.innerHTML = '';
+            
+            // Generate some mock custom skills based on career
+            const skillsMap = {
+                'fe_dev': [
+                    { name: 'Tư duy thuật toán & JS', current: 4, target: 8 },
+                    { name: 'HTML5 / CSS3 / Grid', current: 6, target: 9 },
+                    { name: 'ReactJS Framework', current: 2, target: 8 },
+                    { name: 'Git & Quản lý Source Code', current: 3, target: 7 }
+                ],
+                'data_analyst': [
+                    { name: 'Truy vấn cơ sở dữ liệu SQL', current: 3, target: 9 },
+                    { name: 'Phân tích & Clean Data (Python)', current: 2, target: 8 },
+                    { name: 'Trực quan hóa PowerBI / Tableau', current: 4, target: 8 },
+                    { name: 'Thống kê & Xác suất học', current: 5, target: 7 }
+                ],
+                'uiux_designer': [
+                    { name: 'Thiết kế Visual Figma', current: 4, target: 9 },
+                    { name: 'Nghiên cứu hành vi người dùng', current: 3, target: 8 },
+                    { name: 'Xây dựng Prototype & Wireframe', current: 2, target: 8 },
+                    { name: 'Độ thấu cảm sản phẩm', current: 6, target: 9 }
+                ],
+                'digital_marketer': [
+                    { name: 'Lập kế hoạch & Content', current: 5, target: 8 },
+                    { name: 'Tối ưu quảng cáo FB / GG Ads', current: 2, target: 8 },
+                    { name: 'Phân tích số liệu GA4', current: 3, target: 7 },
+                    { name: 'Tư duy thiết kế hình ảnh', current: 4, target: 7 }
+                ],
+                'content_creator': [
+                    { name: 'Quay dựng & Edit (CapCut)', current: 5, target: 9 },
+                    { name: 'Biên kịch Storytelling', current: 4, target: 8 },
+                    { name: 'Xây dựng thương hiệu cá nhân', current: 3, target: 8 },
+                    { name: 'Quản trị kênh & Analytics', current: 3, target: 7 }
+                ]
+            };
+            
+            const skills = skillsMap[career.id] || skillsMap['fe_dev'];
+            skills.forEach(s => {
+                const currentPct = s.current * 10;
+                const targetPct = s.target * 10;
+                skillGapContainer.innerHTML += `
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs font-semibold text-slate-700 dark:text-slate-350">
+                            <span>${s.name}</span>
+                            <span>Hiện tại: ${s.current}/10 | Yêu cầu: ${s.target}/10</span>
+                        </div>
+                        <div class="w-full h-2.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden relative">
+                            <!-- Target Bar (Background indicator) -->
+                            <div class="absolute top-0 left-0 h-full bg-brand-300/60 dark:bg-brand-800/40 rounded-full" style="width: ${targetPct}%"></div>
+                            <!-- Current Bar (Foreground indicator) -->
+                            <div class="absolute top-0 left-0 h-full bg-gradient-to-r from-brand-600 to-indigo-600 rounded-full" style="width: ${currentPct}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Render 6-Month Timeline
+            const timelineContainer = document.getElementById('roadmap-timeline');
+            timelineContainer.innerHTML = '';
+            
+            career.roadmap.timeline.forEach((node, i) => {
+                timelineContainer.innerHTML += `
+                    <div class="relative pl-6">
+                        <div class="absolute -left-[31px] top-1.5 w-5 h-5 rounded-full bg-white dark:bg-slate-900 border-4 border-brand-500 flex items-center justify-center"></div>
+                        <h4 class="text-sm font-bold text-slate-800 dark:text-slate-105">${node.time}</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${node.details}</p>
+                    </div>
+                `;
+            });
+            
+            // Render Online Courses
+            const coursesContainer = document.getElementById('roadmap-courses');
+            coursesContainer.innerHTML = '';
+            
+            career.roadmap.courses.forEach(c => {
+                let costStr = c.cost;
+                if (economical) {
+                    costStr = "Miễn phí (CareerAI Tài trợ thay thế)";
+                }
+                coursesContainer.innerHTML += `
+                    <div class="p-3 bg-slate-50 dark:bg-slate-950 border border-slate-150 dark:border-slate-800 rounded-xl flex items-center justify-between gap-3 text-xs">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-slate-800 dark:text-slate-200">${c.name}</h5>
+                                <span class="text-[10px] text-slate-400 dark:text-slate-500 font-medium">${c.platform}</span>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-400 font-semibold text-[10px] shrink-0">${costStr}</span>
+                    </div>
+                `;
+            });
+            
+            // Render Certifications
+            const certsContainer = document.getElementById('roadmap-certs');
+            certsContainer.innerHTML = '';
+            
+            career.roadmap.certs.forEach(cert => {
+                certsContainer.innerHTML += `
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-circle-check text-amber-500 mt-0.5 shrink-0"></i>
+                        <span>${cert}</span>
+                    </li>
+                `;
+            });
+            
+            // Render Practicals
+            const practicalsContainer = document.getElementById('roadmap-practicals');
+            practicalsContainer.innerHTML = '';
+            
+            career.roadmap.practicals.forEach(p => {
+                practicalsContainer.innerHTML += `
+                    <li class="flex items-start gap-2">
+                        <i class="fa-solid fa-circle-play text-emerald-500 mt-0.5 shrink-0"></i>
+                        <span>${p}</span>
+                    </li>
+                `;
+            });
+        }
+
+        // --- Progress Sidebar & Options Summary Updater ---
+        function updateProgressSidebar() {
+            const summaryEmpty = document.getElementById('summary-empty');
+            const summaryContent = document.getElementById('summary-content');
+            
+            if (!sessionState.userName) {
+                summaryEmpty.classList.remove('hidden');
+                summaryContent.classList.add('hidden');
+                return;
+            }
+            
+            summaryEmpty.classList.add('hidden');
+            summaryContent.classList.remove('hidden');
+            
+            // Profile Name & Edu
+            document.getElementById('summary-profile-name').innerText = sessionState.userName;
+            document.getElementById('summary-profile-edu').innerText = sessionState.education;
+            
+            // Selected Criteria Chips
+            const criteriaBox = document.getElementById('summary-criteria-box');
+            const criteriaList = document.getElementById('summary-criteria-list');
+            if (sessionState.selectedCriteria.length > 0) {
+                criteriaBox.classList.remove('hidden');
+                criteriaList.innerHTML = '';
+                sessionState.selectedCriteria.forEach(critId => {
+                    const c = ALL_CRITERIA.find(x => x.id === critId);
+                    criteriaList.innerHTML += `
+                        <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-bold ${c.color}">
+                            <i class="fa-solid ${c.icon}"></i> ${c.label}
+                        </span>
+                    `;
+                });
+            } else {
+                criteriaBox.classList.add('hidden');
+            }
+            
+            // Proposed Careers List
+            const careersBox = document.getElementById('summary-careers-box');
+            const careersList = document.getElementById('summary-careers-list');
+            if (sessionState.shortlistedCareers.length > 0) {
+                careersBox.classList.remove('hidden');
+                careersList.innerHTML = '';
+                sessionState.shortlistedCareers.forEach((c, idx) => {
+                    let mark = '●';
+                    let labelClass = 'text-slate-600 dark:text-slate-350';
+                    if (sessionState.stage === 2 && sessionState.currentExploringIndex === idx) {
+                        mark = '<i class="fa-solid fa-spinner animate-spin text-brand-500 mr-1 flex shrink-0"></i>';
+                        labelClass = 'font-bold text-brand-600 dark:text-brand-400';
+                    } else if (sessionState.exploredCareers[c.id]) {
+                        if (sessionState.exploredCareers[c.id].Kept) {
+                            mark = '<i class="fa-solid fa-check text-emerald-500 mr-1 flex shrink-0"></i>';
+                            labelClass = 'text-emerald-600 dark:text-emerald-400 font-medium';
+                        } else {
+                            mark = '<i class="fa-solid fa-xmark text-rose-500 mr-1 flex shrink-0"></i>';
+                            labelClass = 'text-slate-400 line-through';
+                        }
+                    }
+                    careersList.innerHTML += `
+                        <li class="flex items-center py-0.5 ${labelClass}">
+                            <span class="mr-1.5 shrink-0 text-[10px]">${mark}</span>
+                            <span>${c.name}</span>
+                        </li>
+                    `;
+                });
+            } else {
+                careersBox.classList.add('hidden');
+            }
+        }
+
+        // --- Quick Reply Chips Actions ---
+        function updateQuickReplies(replies = []) {
+            const container = document.getElementById('quick-replies-area');
+            container.innerHTML = '';
+            
+            if (replies.length === 0) {
+                container.classList.add('hidden');
+                return;
+            }
+            
+            container.classList.remove('hidden');
+            replies.forEach(r => {
+                const chip = document.createElement('button');
+                chip.type = "button";
+                chip.className = "px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-brand-50 hover:text-brand-700 dark:bg-slate-800 dark:hover:bg-slate-750 dark:hover:text-brand-400 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-brand-500 dark:hover:border-brand-500 transition-all cursor-pointer";
+                chip.innerText = r;
+                chip.onclick = () => {
+                    document.getElementById('chat-input').value = r;
+                    const event = new Event('submit');
+                    document.getElementById('chat-form').dispatchEvent(event);
+                };
+                container.appendChild(chip);
+            });
+        }
+
+        // --- Input Submit Handler ---
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            input.value = '';
+            processUserInput(text);
+        }
+    </script>
+</body>
+</html>
