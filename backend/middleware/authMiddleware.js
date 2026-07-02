@@ -34,7 +34,9 @@ function verifyToken(req, res, next) {
     req.user = {
       id: user.id,
       name: user.name,
-      email: user.email
+      email: user.email,
+      role: user.role || 'user',
+      title: user.title || null
     };
     
     next();

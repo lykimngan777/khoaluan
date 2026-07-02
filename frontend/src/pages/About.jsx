@@ -72,7 +72,7 @@ export default function About() {
             Đề tài Khóa luận
           </h4>
           <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-            Nghiên cứu tích hợp mô hình hướng nghiệp PIC vào hệ thống AI đàm thoại giúp cá nhân hóa lộ trình học tập, đào tạo kỹ năng cho học sinh THPT và sinh viên đại học.
+            Nghiên cứu tích hợp mô hình hướng nghiệp PIC vào hệ thống AI đàm thoại giúp cá nhân hóa lộ trình học tập, đào tạo kỹ năng cho sinh viên.
           </p>
         </div>
 

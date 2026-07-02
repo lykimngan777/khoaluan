@@ -4,6 +4,23 @@
     "name": "ngân",
     "email": "123@gmail.com",
     "password": "$2b$10$9/vslDeUZC9RLndq.REm0u7b7HxzWl0JB5ERHEAmAzI9VZ/xjbafC",
+    "role": "user",
     "createdAt": "2026-06-30T07:02:53.334Z"
+  },
+  {
+    "id": "expert_001",
+    "name": "Chuyên gia Hướng nghiệp",
+    "email": "chuyengia@gmail.com",
+    "password": "$2b$10$JTQPxF/tWauMDmSm3Dz2wOqfR4eo81vSCIjJmX7jcR8waxg0rzwSa",
+    "role": "expert",
+    "title": "Chuyên gia Hướng nghiệp CareerAI",
+    "createdAt": "2026-07-02T00:00:00.000Z"
+  },
+  {
+    "id": "mr31z6usir24k",
+    "name": "a",
+    "email": "a@gmail.com",
+    "password": "$2b$10$PCvHwViF9ny9cu0QkFSqluY8KDQG5ECWzPjwKsl/wuaLnNskgTt6.",
+    "createdAt": "2026-07-02T05:17:33.173Z"
   }
 ]

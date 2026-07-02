@@ -31,7 +31,7 @@ export default function Login({ setActiveTab }) {
 
   return (
     <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50 dark:bg-slate-950 no-print">
-      <div className="max-w-md w-full space-y-8 bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden">
+      <div className="max-w-lg w-full space-y-8 bg-white dark:bg-slate-900 p-8 sm:p-10 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl relative overflow-hidden">
         
         {/* Glow Decor */}
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary-500/10 rounded-full blur-2xl" />
@@ -41,8 +41,8 @@ export default function Login({ setActiveTab }) {
           <div className="mx-auto h-12 w-12 rounded-2xl bg-gradient-to-tr from-primary-600 to-sky-400 flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-primary-500/20">
             C
           </div>
-          <h2 className="mt-6 text-3xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">
-            Chào mừng trở lại!
+          <h2 className="mt-6 text-3xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight whitespace-nowrap">
+            Chào mừng đến với Career AI!
           </h2>
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
             Đăng nhập để lưu tiến trình hướng nghiệp CareerAI

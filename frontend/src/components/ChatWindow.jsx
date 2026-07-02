@@ -159,6 +159,7 @@ export default function ChatWindow({
   setActiveTab
 }) {
   const [careerInputText, setCareerInputText] = useState('');
+  const [customShortlistInput, setCustomShortlistInput] = useState('');
   const [interestScores, setInterestScores] = useState({});
   const [isWizardCollapsed, setIsWizardCollapsed] = useState(false);
   const [isQuestionnaireMode, setIsQuestionnaireMode] = useState(false);
@@ -167,21 +168,9 @@ export default function ChatWindow({
   const messagesEndRef = useRef(null);
   const lastAIMessageRef = useRef(null);
 
-  useEffect(() => {
-    if (userProposedCareers && userProposedCareers.length > 0) {
-      setShortlistedCareers(prev => {
-        const combined = [...new Set([...prev, ...userProposedCareers])];
-        return combined.slice(0, 5);
-      });
-    }
-  }, [userProposedCareers, setShortlistedCareers]);
 
-  useEffect(() => {
-    if (subStage === 'CHOICE_SELECTION' && !selectedCareer) {
-      const list = shortlistedCareers.length > 0 ? shortlistedCareers : ['Kỹ sư Phần mềm', 'Digital Marketer', 'UX/UI Designer'];
-      setSelectedCareer(list[0]);
-    }
-  }, [subStage, shortlistedCareers, selectedCareer, setSelectedCareer]);
+
+
 
   const [criteriaScores, setCriteriaScores] = useState(() => {
     const initial = {};
@@ -218,6 +207,10 @@ export default function ChatWindow({
   });
 
   const renderEmptyHistoryPlaceholder = () => {
+    if (stage === 'CHOICE' || stage === 'COMPLETED') {
+      return null;
+    }
+
     let welcomeTitle = "Bắt đầu buổi tư vấn CareerAI";
     let welcomeDesc = "Trợ lý AI sẽ dẫn dắt bạn qua 3 giai đoạn của mô hình hướng nghiệp PIC.";
     let welcomeTip = "Sử dụng bảng điều khiển bên dưới để bắt đầu ↓";
@@ -226,10 +219,6 @@ export default function ChatWindow({
       welcomeTitle = "Giai đoạn 2: Khám phá chuyên sâu (In-depth)";
       welcomeDesc = "Tại đây, CareerAI sẽ cùng bạn đi sâu nghiên cứu xu hướng, mức lương, khoảng cách năng lực và ưu/nhược điểm của từng ngành nghề rút gọn.";
       welcomeTip = "Bấm nút 'Xem phân tích chuyên sâu' bên dưới để bắt đầu khám phá ↓";
-    } else if (stage === 'CHOICE' || stage === 'COMPLETED') {
-      welcomeTitle = "Giai đoạn 3: Lựa chọn lộ trình (Choice)";
-      welcomeDesc = "Chúng ta sẽ tiến hành so sánh các ngành nghề qua Ma trận quyết định để chọn ra 1 nghề mục tiêu tối ưu, từ đó xây dựng lộ trình học tập 6-12 tháng.";
-      welcomeTip = "Lựa chọn nghề nghiệp mục tiêu của bạn bên dưới ↓";
     }
 
     return (
@@ -352,6 +341,27 @@ export default function ChatWindow({
     }
   };
 
+  const handleAddCustomShortlist = () => {
+    if (!customShortlistInput.trim()) return;
+    
+    const newCareer = customShortlistInput.trim();
+    
+    // Add to userProposedCareers if not already present
+    if (!userProposedCareers.some(c => c.toLowerCase() === newCareer.toLowerCase())) {
+      const updated = [...userProposedCareers, newCareer];
+      updateSession({ userProposedCareers: updated });
+    }
+    
+    // Automatically add to shortlistedCareers (select it) if not already selected
+    if (!shortlistedCareers.some(c => c.toLowerCase() === newCareer.toLowerCase())) {
+      if (shortlistedCareers.length < 5) {
+        setShortlistedCareers(prev => [...prev, newCareer]);
+      }
+    }
+    
+    setCustomShortlistInput('');
+  };
+
   useEffect(() => {
     if (isLoading) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -412,12 +422,12 @@ export default function ChatWindow({
   // 2. LISTING_CAREERS — input with validation
   const renderCareerListingWizard = () => {
     const currentList = careerInputText.split(/[,;\n]/).map(c => c.trim()).filter(c => c.length > 0);
-    const isValid = currentList.length >= 1 && currentList.length <= 3;
+    const isValid = currentList.length >= 3 && currentList.length <= 5;
     return (
-      <div className="mx-4 mb-4 p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md space-y-3">
+      <div className="mx-4 mb-4 p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md space-y-3 animate-fade-in">
         <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">
-          <Briefcase className="w-4 h-4 text-primary-500" />
-          Liệt kê 3 nghề nghiệp bạn quan tâm:
+          <Briefcase className="w-4 h-4 text-primary-500 animate-pulse" />
+          Liệt kê từ 3 đến 5 nghề nghiệp bạn quan tâm:
         </p>
         <textarea
           value={careerInputText}
@@ -427,17 +437,17 @@ export default function ChatWindow({
           className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-800 dark:text-slate-100 resize-none"
         />
         <div className="flex items-center justify-between">
-          <span className={`text-xs font-medium ${isValid ? 'text-emerald-500' : 'text-amber-500'}`}>
-            {currentList.length > 3 
-              ? `⚠️ Vượt quá số lượng cho phép (tối đa 3 nghề)` 
+          <span className={`text-xs font-semibold ${isValid ? 'text-emerald-500' : 'text-amber-500'}`}>
+            {currentList.length > 5 
+              ? `⚠️ Vượt quá số lượng cho phép (tối đa 5 nghề)` 
               : currentList.length > 0 
-                ? `✅ Đã chọn ${currentList.length}/3 nghề`
-                : ''}
+                ? `Đã chọn: ${currentList.length}/5 nghề ${currentList.length < 3 ? '(Cần thêm ít nhất ' + (3 - currentList.length) + ' nghề)' : '(Hợp lệ)'}`
+                : 'Vui lòng điền từ 3 đến 5 nghề'}
           </span>
           <button
             disabled={!isValid}
             onClick={() => { sendMessage(careerInputText); setCareerInputText(''); }}
-            className="px-4 py-2 bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white text-sm font-semibold rounded-xl flex items-center gap-2 transition-colors"
+            className="px-4 py-2 bg-primary-600 hover:bg-primary-700 disabled:opacity-50 text-white text-sm font-semibold rounded-xl flex items-center gap-2 transition-colors active:scale-95"
           >
             Gửi danh sách <ChevronRight className="w-4 h-4" />
           </button>
@@ -445,30 +455,32 @@ export default function ChatWindow({
         
         {/* Also offer quick-select chips */}
         <div>
-          <p className="text-xs text-slate-400 mb-2">Chọn nhanh:</p>
+          <p className="text-xs text-slate-400 mb-2 font-medium">Chọn nhanh (Nhấp để thêm/bỏ chọn):</p>
           <div className="flex flex-wrap gap-1.5">
             {suggestedCareers.map(career => {
               const selected = currentList.includes(career);
-              const disabled = !selected && currentList.length >= 3;
+              const disabled = !selected && currentList.length >= 5;
               return (
                 <button
                   key={career}
                   disabled={disabled}
                   onClick={() => {
                     const current = careerInputText ? careerInputText.split(',').map(c => c.trim()).filter(Boolean) : [];
-                    if (!current.includes(career)) {
+                    if (current.includes(career)) {
+                      setCareerInputText(current.filter(c => c !== career).join(', '));
+                    } else {
                       setCareerInputText([...current, career].join(', '));
                     }
                   }}
-                  className={`text-xs px-2.5 py-1 rounded-lg transition-colors border ${
+                  className={`text-xs px-2.5 py-1 rounded-lg transition-all border ${
                     selected 
-                      ? 'bg-primary-50 border-primary-300 text-primary-600 dark:bg-primary-950/20'
+                      ? 'bg-primary-50 border-primary-300 text-primary-600 dark:bg-primary-950/20 font-bold'
                       : disabled
                         ? 'opacity-40 cursor-not-allowed bg-slate-100 border-slate-200 text-slate-400 dark:bg-slate-800'
                         : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700'
                   }`}
                 >
-                  + {career}
+                  {selected ? '✓ ' : '+ '}{career}
                 </button>
               );
             })}
@@ -842,7 +854,7 @@ export default function ChatWindow({
       if (match) {
         // Only add once if not already matched
         if (!matchedPairs.some(p => p.user === u)) {
-          matchedPairs.push({ user: u, ai: match, colorIndex: colorIdx % 3 });
+          matchedPairs.push({ user: u, ai: match, colorIndex: colorIdx % 6 });
           colorIdx++;
         }
       }
@@ -870,6 +882,21 @@ export default function ChatWindow({
       {
         selected: 'bg-rose-600 text-white border-rose-600 scale-105 shadow-sm',
         unselected: 'bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-950/20 dark:border-rose-900/40 dark:text-rose-400'
+      },
+      // Theme 3: Violet (Purple)
+      {
+        selected: 'bg-violet-600 text-white border-violet-600 scale-105 shadow-sm',
+        unselected: 'bg-violet-50 hover:bg-violet-100 text-violet-700 border-violet-200 dark:bg-violet-950/20 dark:border-violet-900/40 dark:text-violet-400'
+      },
+      // Theme 4: Orange/Amber (Orange)
+      {
+        selected: 'bg-orange-600 text-white border-orange-600 scale-105 shadow-sm',
+        unselected: 'bg-orange-50 hover:bg-orange-100 text-orange-700 border-orange-200 dark:bg-orange-950/20 dark:border-orange-900/40 dark:text-orange-400'
+      },
+      // Theme 5: Teal (Teal)
+      {
+        selected: 'bg-teal-600 text-white border-teal-600 scale-105 shadow-sm',
+        unselected: 'bg-teal-50 hover:bg-teal-100 text-teal-700 border-teal-200 dark:bg-teal-950/20 dark:border-teal-900/40 dark:text-teal-400'
       }
     ];
 
@@ -882,7 +909,7 @@ export default function ChatWindow({
             <Briefcase className="w-4 h-4 text-amber-500" />
             Chọn nghề vào danh sách rút gọn (Shortlist):
           </p>
-          <span className="text-xs text-amber-600 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-950/20 px-2.5 py-1 rounded-lg border border-amber-200/50 dark:border-amber-900/40 select-none shadow-sm">(Tối đa 5 nghề)</span>
+          <span className="text-xs text-amber-600 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-950/20 px-2.5 py-1 rounded-lg border border-amber-200/50 dark:border-amber-900/40 select-none shadow-sm">(Từ 3 - 5 nghề)</span>
         </div>
 
         {userProposedCareers.length > 0 && (
@@ -957,6 +984,8 @@ export default function ChatWindow({
           </div>
         </div>
 
+
+
         {/* Legend note explaining matched pairs */}
         {matchedPairs.length > 0 && (
           <div className="text-xs text-blue-700 dark:text-blue-300 flex items-start gap-2 bg-blue-50/70 dark:bg-blue-950/20 p-3.5 rounded-2xl border border-blue-200 dark:border-blue-900/40 leading-relaxed shadow-sm">
@@ -968,9 +997,14 @@ export default function ChatWindow({
         )}
 
         <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
-          <span className="text-xs text-slate-500">{shortlistedCareers.length}/5 nghề đã chọn</span>
+          <span className={`text-xs ${shortlistedCareers.length < 3 ? 'text-amber-600 dark:text-amber-400 font-bold animate-pulse' : 'text-slate-500'}`}>
+            {shortlistedCareers.length < 3 
+              ? `Đã chọn: ${shortlistedCareers.length}/5 (Cần chọn ít nhất 3 nghề)`
+              : `Đã chọn: ${shortlistedCareers.length}/5`
+            }
+          </span>
           <button
-            disabled={shortlistedCareers.length === 0 || shortlistedCareers.length > 5}
+            disabled={shortlistedCareers.length < 3 || shortlistedCareers.length > 5}
             onClick={() => sendMessage(`Xác nhận shortlist: ${shortlistedCareers.join(', ')}`)}
             className="px-4 py-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white text-sm font-semibold rounded-xl flex items-center gap-2 transition-colors"
           >
@@ -1077,6 +1111,156 @@ export default function ChatWindow({
     return { fit, market };
   };
 
+  // Helper to get career rating for a specific criterion dynamically
+  const getCareerCriteriaValue = (careerName, criterion) => {
+    const c = careerName.toLowerCase();
+    
+    switch (criterion) {
+      case "Mức thu nhập":
+        if (c.includes("phần mềm") || c.includes("software") || c.includes("dữ liệu") || c.includes("data") || c.includes("quản lý sản phẩm") || c.includes("product manager") || c.includes("bác sĩ") || c.includes("y khoa") || c.includes("tài chính") || c.includes("ngân hàng")) {
+          return 5;
+        } else if (c.includes("marketing") || c.includes("designer") || c.includes("thiết kế") || c.includes("sales") || c.includes("kinh doanh") || c.includes("kiểm toán")) {
+          return 4;
+        } else if (c.includes("hành chính") || c.includes("nhân sự") || c.includes("giáo viên") || c.includes("kế toán")) {
+          return 3;
+        }
+        return 2.5;
+
+      case "Thời gian đào tạo":
+        if (c.includes("bác sĩ") || c.includes("y khoa") || c.includes("nghiên cứu") || c.includes("dược sĩ")) {
+          return 5;
+        } else if (c.includes("phần mềm") || c.includes("software") || c.includes("kỹ sư") || c.includes("kiến trúc") || c.includes("luật")) {
+          return 4;
+        } else if (c.includes("marketing") || c.includes("designer") || c.includes("thiết kế") || c.includes("sales") || c.includes("kinh doanh")) {
+          return 3;
+        }
+        return 2;
+
+      case "Yêu cầu thể chất":
+        if (c.includes("bác sĩ") || c.includes("y tá") || c.includes("sản xuất") || c.includes("vận chuyển") || c.includes("phục vụ") || c.includes("du lịch")) {
+          return 4.5;
+        } else if (c.includes("phần mềm") || c.includes("software") || c.includes("dữ liệu") || c.includes("data") || c.includes("designer") || c.includes("thiết kế") || c.includes("kế toán") || c.includes("hành chính")) {
+          return 1.5;
+        }
+        return 2.5;
+
+      case "Kỹ năng đặc thù (Toán học, ...)":
+        if (c.includes("dữ liệu") || c.includes("data") || c.includes("phần mềm") || c.includes("software") || c.includes("tài chính") || c.includes("kiểm toán") || c.includes("kỹ sư")) {
+          return 5;
+        } else if (c.includes("marketing") || c.includes("designer") || c.includes("thiết kế") || c.includes("kế toán")) {
+          return 3.5;
+        }
+        return 2;
+
+      case "Sáng tạo":
+        if (c.includes("designer") || c.includes("thiết kế") || c.includes("marketing") || c.includes("sáng lập") || c.includes("nghệ thuật") || c.includes("writer") || c.includes("content")) {
+          return 5;
+        } else if (c.includes("phần mềm") || c.includes("software") || c.includes("product") || c.includes("quản lý sản phẩm")) {
+          return 4;
+        } else if (c.includes("kế toán") || c.includes("kiểm toán") || c.includes("hành chính")) {
+          return 1.5;
+        }
+        return 3;
+
+      case "Ít áp lực":
+        if (c.includes("thủ thư") || c.includes("lưu trữ") || c.includes("hành chính") || c.includes("nhập liệu")) {
+          return 4.5;
+        } else if (c.includes("bác sĩ") || c.includes("y khoa") || c.includes("quản lý sản phẩm") || c.includes("product manager") || c.includes("sales") || c.includes("startup")) {
+          return 1.5;
+        } else if (c.includes("phần mềm") || c.includes("software") || c.includes("dữ liệu") || c.includes("data") || c.includes("marketing") || c.includes("designer")) {
+          return 3;
+        }
+        return 3.5;
+
+      case "Linh hoạt":
+        if (c.includes("freelance") || c.includes("designer") || c.includes("thiết kế") || c.includes("writer") || c.includes("marketing")) {
+          return 5;
+        } else if (c.includes("phần mềm") || c.includes("software") || c.includes("dữ liệu") || c.includes("data")) {
+          return 4;
+        } else if (c.includes("bác sĩ") || c.includes("y tế") || c.includes("công chức") || c.includes("ngân hàng")) {
+          return 1.5;
+        }
+        return 3;
+
+      case "Công nghệ":
+        if (c.includes("phần mềm") || c.includes("software") || c.includes("dữ liệu") || c.includes("data") || c.includes("designer") || c.includes("product") || c.includes("quản lý sản phẩm")) {
+          return 5;
+        } else if (c.includes("marketing") || c.includes("tài chính") || c.includes("kiểm toán") || c.includes("kế toán")) {
+          return 4;
+        }
+        return 2;
+
+      case "Giao tiếp":
+        if (c.includes("sales") || c.includes("marketing") || c.includes("quản lý") || c.includes("product") || c.includes("tư vấn") || c.includes("giảng dạy") || c.includes("giáo viên") || c.includes("nhân sự")) {
+          return 5;
+        } else if (c.includes("designer") || c.includes("thiết kế") || c.includes("bác sĩ") || c.includes("kiểm toán")) {
+          return 3.5;
+        } else if (c.includes("phần mềm") || c.includes("software") || c.includes("dữ liệu") || c.includes("data") || c.includes("kế toán") || c.includes("nhập liệu")) {
+          return 2;
+        }
+        return 3;
+
+      case "Kỹ thuật":
+        if (c.includes("phần mềm") || c.includes("software") || c.includes("kỹ sư") || c.includes("cơ khí") || c.includes("điện") || c.includes("kiến trúc")) {
+          return 5;
+        } else if (c.includes("dữ liệu") || c.includes("data") || c.includes("designer") || c.includes("thiết kế")) {
+          return 3.5;
+        }
+        return 1.5;
+
+      case "Nghiên cứu":
+        if (c.includes("dữ liệu") || c.includes("data") || c.includes("nghiên cứu") || c.includes("khoa học") || c.includes("kiểm toán") || c.includes("phân tích")) {
+          return 5;
+        } else if (c.includes("phần mềm") || c.includes("software") || c.includes("marketing") || c.includes("product") || c.includes("luật")) {
+          return 4;
+        }
+        return 2;
+
+      case "Xã hội":
+        if (c.includes("bác sĩ") || c.includes("y tế") || c.includes("y tá") || c.includes("giáo viên") || c.includes("tư vấn") || c.includes("nhân sự") || c.includes("xã hội")) {
+          return 5;
+        } else if (c.includes("phần mềm") || c.includes("software") || c.includes("kế toán")) {
+          return 2;
+        }
+        return 3.5;
+
+      case "Kinh doanh":
+        if (c.includes("sales") || c.includes("marketing") || c.includes("kinh doanh") || c.includes("tài chính") || c.includes("product") || c.includes("quản lý") || c.includes("thương mại")) {
+          return 5;
+        } else if (c.includes("phần mềm") || c.includes("software") || c.includes("hành chính") || c.includes("y tế")) {
+          return 2;
+        }
+        return 3;
+
+      case "Khởi nghiệp":
+        if (c.includes("sáng lập") || c.includes("founder") || c.includes("quản lý") || c.includes("product") || c.includes("startup") || c.includes("khởi nghiệp") || c.includes("kinh doanh")) {
+          return 5;
+        } else if (c.includes("hành chính") || c.includes("kế toán") || c.includes("công chức")) {
+          return 1.5;
+        }
+        return 3;
+
+      case "Môi trường quốc tế":
+        if (c.includes("phần mềm") || c.includes("software") || c.includes("designer") || c.includes("marketing") || c.includes("ngoại thương") || c.includes("dịch thuật")) {
+          return 5;
+        } else if (c.includes("hành chính") || c.includes("công chức")) {
+          return 2;
+        }
+        return 3.5;
+
+      case "Ổn định":
+        if (c.includes("công chức") || c.includes("giáo viên") || c.includes("kế toán") || c.includes("ngân hàng") || c.includes("hành chính")) {
+          return 5;
+        } else if (c.includes("startup") || c.includes("khởi nghiệp") || c.includes("freelance") || c.includes("tự do")) {
+          return 2;
+        }
+        return 3.5;
+
+      default:
+        return 3;
+    }
+  };
+
   // Helper to render stars
   const renderStars = (value, clickable = false, careerName = null) => {
     const stars = [];
@@ -1142,6 +1326,62 @@ export default function ChatWindow({
       return "Khớp khá tốt với các tiêu chí ưu tiên của bạn, cung cấp lộ trình học tập và tích lũy năng lực vững chắc trong tương lai.";
     };
 
+    const getCareerProsAndCons = (careerName) => {
+      const c = careerName.toLowerCase();
+      if (c.includes('phần mềm') || c.includes('software') || c.includes('lập trình')) {
+        return {
+          pros: "Thu nhập khởi điểm rất tốt, nhu cầu tuyển dụng bền vững, cơ hội làm remote cho công ty quốc tế cao.",
+          cons: "Áp lực deadline lớn, thường xuyên OT, công nghệ cập nhật nhanh đòi hỏi tự học liên tục."
+        };
+      }
+      if (c.includes('marketing') || c.includes('marketer')) {
+        return {
+          pros: "Môi trường năng động, thỏa sức sáng tạo ý tưởng và giao tiếp, cơ hội làm freelancer đa dạng.",
+          cons: "Áp lực KPI doanh số cao, công việc thay đổi theo thuật toán liên tục, tính cạnh tranh trên thị trường lớn."
+        };
+      }
+      if (c.includes('thiết kế') || c.includes('designer') || c.includes('ux/ui')) {
+        return {
+          pros: "Giao thoa tốt giữa nghệ thuật và kỹ thuật số, thời gian đào tạo nhanh, cơ hội làm remote/freelance rộng mở.",
+          cons: "Phải cân bằng giữa thẩm mỹ và trải nghiệm thực tế, nhận phản hồi chỉnh sửa liên tục từ khách hàng/PM."
+        };
+      }
+      if (c.includes('dữ liệu') || c.includes('data') || c.includes('phân tích')) {
+        return {
+          pros: "Nhu cầu lớn trong kỷ nguyên số, thu nhập ổn định, phát triển tư duy logic và ra quyết định chiến lược.",
+          cons: "Làm việc với số liệu lớn dễ gây mệt mỏi, cần kỹ năng thuyết trình truyền tải dữ liệu phức tạp."
+        };
+      }
+      if (c.includes('quản lý sản phẩm') || c.includes('product manager') || c.includes('product')) {
+        return {
+          pros: "Vai trò trung tâm điều phối, cơ hội thăng tiến lên cấp quản trị cao, rèn luyện kỹ năng lãnh đạo toàn diện.",
+          cons: "Chịu trách nhiệm thành bại sản phẩm nhưng không có quyền lực trực tiếp đối với các thành viên, áp lực giao tiếp lớn."
+        };
+      }
+      if (c.includes('bác sĩ') || c.includes('y khoa') || c.includes('y tế')) {
+        return {
+          pros: "Ý nghĩa xã hội cao quý, nhu cầu luôn ổn định, vị thế xã hội tốt.",
+          cons: "Thời gian đào tạo rất dài (6+ năm), trực đêm vất vả, áp lực cao liên quan đến sức khỏe con người."
+        };
+      }
+      if (c.includes('sales') || c.includes('bán hàng') || c.includes('kinh doanh')) {
+        return {
+          pros: "Thu nhập đột biến theo hoa hồng, rèn luyện giao tiếp và kỹ năng thương lượng đỉnh cao.",
+          cons: "Áp lực doanh số nặng nề, thu nhập không cố định, tỷ lệ đào thải cao."
+        };
+      }
+      if (c.includes('kế toán') || c.includes('kiểm toán')) {
+        return {
+          pros: "Công việc ổn định, quy chuẩn rõ ràng, doanh nghiệp nào cũng cần.",
+          cons: "Áp lực sổ sách cuối kỳ lớn, công việc lặp đi lặp lại, ít không gian sáng tạo."
+        };
+      }
+      return {
+        pros: "Phù hợp tốt với các tiêu chí năng lực và sở thích của bạn, lộ trình thăng tiến rõ ràng trong tương lai.",
+        cons: "Đòi hỏi thời gian thích nghi và rèn luyện kỹ năng thực tiễn, cần kiên trì tự học trong giai đoạn đầu."
+      };
+    };
+
     return (
       <div className="mx-4 mb-4 p-5 bg-white dark:bg-slate-900 rounded-2xl border border-sky-200 dark:border-sky-700 shadow-lg space-y-4">
         {/* Header */}
@@ -1149,93 +1389,163 @@ export default function ChatWindow({
           <div>
             <p className="text-sm font-bold text-sky-700 dark:text-sky-300 flex items-center gap-2">
               <Target className="w-4 h-4 text-sky-500 animate-pulse" />
-              🎯 Giai đoạn 3: Ma trận quyết định & Lựa chọn nghề đích
+              🎯 Giai đoạn 3: Bảng xếp hạng & So sánh chi tiết
             </p>
             <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
-              Đối chiếu phân tích logic của AI với trực giác (Mức độ hứng thú) của bạn
+              Đánh giá mức độ hứng thú để AI tự động sắp xếp thứ hạng ưu tiên trong thời gian thực
             </p>
           </div>
-          <span className="text-[10px] font-semibold bg-sky-100 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 px-2.5 py-1 rounded-full border border-sky-200 dark:border-sky-800">
+          <span className="text-[10px] font-semibold bg-sky-100 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 px-2.5 py-1 rounded-full border border-sky-200 dark:border-sky-800 shrink-0">
             PIC Model: Choice
           </span>
         </div>
 
-        {/* Info banner */}
-        <div className="text-xs bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-400 p-3 rounded-xl border border-slate-100 dark:border-slate-800/50 flex items-start gap-2 leading-relaxed">
-          <span className="text-sm select-none">💡</span>
-          <div>
-            Hệ thống sắp xếp thứ tự dựa trên điểm số tổng hợp. Bạn hãy <strong>đánh giá mức độ hứng thú (Cột Hứng thú)</strong> theo trực giác của mình để cập nhật bảng xếp hạng trong thời gian thực!
-          </div>
-        </div>
 
-        {/* Table Container */}
+
+        {/* Combined Ranking & Criteria Comparison Table */}
         <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm bg-white dark:bg-slate-950">
           <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-800 text-xs">
             <thead className="bg-slate-50 dark:bg-slate-900/50 text-[10px] uppercase font-bold tracking-wider text-slate-500 dark:text-slate-400">
               <tr>
-                <th className="px-3 py-2.5 text-center w-12">Chọn</th>
-                <th className="px-3 py-2.5 text-center w-12">Hạng</th>
-                <th className="px-3 py-2.5 text-left min-w-[140px]">Nghề nghiệp</th>
-                <th className="px-3 py-2.5 text-center">Phù hợp (AI)</th>
-                <th className="px-3 py-2.5 text-center">Thị trường (AI)</th>
-                <th className="px-3 py-2.5 text-center">Hứng thú (Bạn)</th>
-                <th className="px-3 py-2.5 text-center w-20">Điểm số</th>
+                <th className="px-3 py-3 text-center w-14">Hạng</th>
+                <th className="px-3 py-3 text-left min-w-[140px]">Nghề nghiệp</th>
+                <th className="px-3 py-3 text-center min-w-[130px]">Đánh giá & Điểm số</th>
+                <th className="px-3 py-3 text-left min-w-[180px]">Đáp ứng tiêu chí</th>
+                <th className="px-3 py-3 text-left min-w-[280px]">Phân tích Ưu & Nhược điểm (AI)</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
               {sortedCareers.map(({ career, fit, market, interest, totalScore }, idx) => {
                 const isSelected = selectedCareer === career;
+                const { pros, cons } = getCareerProsAndCons(career);
                 
                 // Color for total score badge
-                let scoreBadgeClass = 'bg-rose-50 text-rose-600 dark:bg-rose-950/20 dark:text-rose-400 border-rose-100 dark:border-rose-900/30';
+                let scoreBadgeClass = 'bg-rose-50 text-rose-600 dark:bg-rose-950/20 dark:text-rose-450 border-rose-100 dark:border-rose-900/30';
                 if (totalScore >= 8.5) {
-                  scoreBadgeClass = 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30';
+                  scoreBadgeClass = 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-455 border-emerald-100 dark:border-emerald-900/30';
                 } else if (totalScore >= 7.0) {
-                  scoreBadgeClass = 'bg-amber-50 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400 border-amber-100 dark:border-amber-900/30';
+                  scoreBadgeClass = 'bg-amber-50 text-amber-600 dark:bg-amber-950/20 dark:text-amber-455 border-amber-100 dark:border-amber-900/30';
                 }
+
+                // Rank badge colors
+                let rankBadge = "text-slate-400 dark:text-slate-500 font-bold";
+                if (idx === 0) rankBadge = "text-amber-500 font-extrabold text-sm drop-shadow-sm";
+                else if (idx === 1) rankBadge = "text-slate-455 font-extrabold text-sm";
+                else if (idx === 2) rankBadge = "text-amber-700 font-extrabold text-sm";
+
+                const displayCriteria = [...new Set([
+                  ...selectedCriteria,
+                  "Mức thu nhập",
+                  "Thời gian đào tạo",
+                  "Yêu cầu thể chất",
+                  "Ít áp lực",
+                  "Linh hoạt"
+                ])].slice(0, 5);
 
                 return (
                   <tr
                     key={career}
                     onClick={() => setSelectedCareer(career)}
-                    className={`hover:bg-slate-50 dark:hover:bg-slate-900/40 cursor-pointer transition-colors ${
-                      isSelected ? 'bg-sky-50/50 dark:bg-sky-950/20' : ''
+                    className={`hover:bg-slate-50/50 dark:hover:bg-slate-900/20 cursor-pointer transition-colors ${
+                      isSelected ? 'bg-sky-50/30 dark:bg-sky-950/10' : ''
                     }`}
                   >
-                    <td className="px-3 py-3 text-center">
-                      <input
-                        type="radio"
-                        name="selectedTargetCareer"
-                        checked={isSelected}
-                        onChange={() => setSelectedCareer(career)}
-                        className="text-primary-600 focus:ring-primary-500 h-3.5 w-3.5"
-                      />
+                    <td className="px-3 py-3 text-center font-bold">
+                      <span className={rankBadge}>#{idx + 1}</span>
                     </td>
-                    <td className="px-3 py-3 text-center font-bold text-slate-400 dark:text-slate-500">
-                      #{idx + 1}
-                    </td>
-                    <td className="px-3 py-3 text-left font-bold text-slate-700 dark:text-slate-300">
-                      {career}
+                    <td className="px-3 py-3 text-left">
+                      <div className="font-extrabold text-slate-800 dark:text-slate-200 text-sm">{career}</div>
+                      <div className="text-[10px] text-slate-405 dark:text-slate-500 mt-0.5">Phù hợp: {fit}/5 | Thị trường: {market}/5</div>
                     </td>
                     <td className="px-3 py-3 text-center">
-                      <div className="inline-flex justify-center">{renderStars(fit)}</div>
+                      <div className="flex flex-col items-center justify-center gap-1.5">
+                        <div className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">Hứng thú (Bạn):</div>
+                        <div className="inline-flex justify-center bg-slate-50 dark:bg-slate-900 px-2 py-0.5 rounded-lg border border-slate-100 dark:border-slate-800">
+                          {renderStars(interest, true, career)}
+                        </div>
+                        <span className={`mt-1 px-2.5 py-1 rounded-md text-[11px] font-extrabold border ${scoreBadgeClass}`}>
+                          {totalScore.toFixed(1)}/10
+                        </span>
+                      </div>
                     </td>
-                    <td className="px-3 py-3 text-center">
-                      <div className="inline-flex justify-center">{renderStars(market)}</div>
+                    <td className="px-3 py-3 text-left">
+                      <div className="space-y-1.5 text-[11px] min-w-[150px]">
+                        {displayCriteria.map(criterion => {
+                          const value = getCareerCriteriaValue(career, criterion);
+                          const pct = (value / 5) * 100;
+                          const isUserPriority = selectedCriteria.includes(criterion);
+                          return (
+                            <div key={criterion} className="flex items-center justify-between gap-2">
+                              <span className={`truncate max-w-[85px] font-medium ${isUserPriority ? 'text-primary-600 dark:text-primary-400 font-bold' : 'text-slate-500 dark:text-slate-450'}`} title={criterion}>
+                                {isUserPriority ? '★ ' : ''}{criterion}
+                              </span>
+                              <div className="flex items-center gap-1">
+                                <div className="w-10 h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0">
+                                  <div className={`h-full rounded-full ${isUserPriority ? 'bg-primary-500' : 'bg-amber-500'}`} style={{ width: `${pct}%` }} />
+                                </div>
+                                <span className="font-extrabold text-slate-600 dark:text-slate-350 text-[9px] w-5 text-right">{value}/5</span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </td>
-                    <td className="px-3 py-3 text-center">
-                      <div className="inline-flex justify-center">{renderStars(interest, true, career)}</div>
-                    </td>
-                    <td className="px-3 py-3 text-center">
-                      <span className={`px-2 py-1 rounded-md text-[11px] font-extrabold border ${scoreBadgeClass}`}>
-                        {totalScore.toFixed(1)}/10
-                      </span>
+                    <td className="px-3 py-3 text-left text-[11px] leading-relaxed">
+                      <div className="space-y-2 max-w-[320px]">
+                        <div>
+                          <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-450 font-bold">
+                            <span className="text-[12px]">✓</span> Lý do nên chọn:
+                          </span>
+                          <p className="text-slate-600 dark:text-slate-300 pl-3">{pros}</p>
+                        </div>
+                        <div>
+                          <span className="inline-flex items-center gap-1 text-rose-500 dark:text-rose-455 font-bold">
+                            <span className="text-[12px]">⚠️</span> Cần cân nhắc:
+                          </span>
+                          <p className="text-slate-600 dark:text-slate-350 pl-3">{cons}</p>
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
+        </div>
+
+        {/* Career Selection Stickers */}
+        <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="text-center">
+            <p className="text-xs font-bold text-slate-550 dark:text-slate-400 uppercase tracking-wider">
+              🎯 Chọn nghề nghiệp mục tiêu của bạn để lập lộ trình:
+            </p>
+            <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
+              Click vào một nhãn nghề nghiệp bên dưới để chọn làm định hướng và thiết lập lộ trình học tập 6-12 tháng
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2.5 justify-center">
+            {sortedCareers.map(({ career }) => {
+              const isSelected = selectedCareer === career;
+              return (
+                <button
+                  key={career}
+                  onClick={() => setSelectedCareer(career)}
+                  className={`px-4 py-2.5 rounded-xl font-bold text-xs border transition-all flex items-center gap-2 ${
+                    isSelected
+                      ? 'bg-gradient-to-r from-sky-600 to-primary-600 border-sky-500 text-white shadow-md shadow-sky-500/20 scale-[1.03]'
+                      : 'bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-850 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:scale-[1.01]'
+                  }`}
+                >
+                  <span className={`w-3.5 h-3.5 rounded-full flex items-center justify-center border ${
+                    isSelected ? 'border-white bg-white/20' : 'border-slate-300 dark:border-slate-700'
+                  }`}>
+                    {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white animate-scale-in" />}
+                  </span>
+                  {career}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Explainable AI (XAI) Box */}
@@ -1360,6 +1670,14 @@ export default function ChatWindow({
 
     if (!wizardContent) return null;
 
+    if (stage === 'CHOICE' || stage === 'COMPLETED') {
+      return (
+        <div className="flex-1 min-h-0 flex flex-col overflow-y-auto px-4 pb-4">
+          {wizardContent}
+        </div>
+      );
+    }
+
     if (isWizardCollapsed) {
       return (
         <div className="mx-4 mb-4 p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between transition-all">
@@ -1378,7 +1696,7 @@ export default function ChatWindow({
     }
 
     return (
-      <div className="relative">
+      <div className="relative flex flex-col">
         {/* Collapse Toggle Button Toolbar */}
         <div className="flex justify-end px-4 mb-1">
           <button
@@ -1389,54 +1707,65 @@ export default function ChatWindow({
             Thu gọn ↓
           </button>
         </div>
-        {wizardContent}
+        <div className={`overflow-y-auto ${
+          filteredHistory.length === 0 && (stage === 'CHOICE' || stage === 'COMPLETED')
+            ? 'max-h-[82vh]'
+            : 'max-h-[48vh] md:max-h-[50vh]'
+        } pr-0.5`}>
+          {wizardContent}
+        </div>
       </div>
     );
   };
 
+  const isChoiceOrCompleted = stage === 'CHOICE' || stage === 'COMPLETED';
+
   return (
     <div className="flex-1 flex flex-col h-full bg-slate-50 dark:bg-slate-950 overflow-hidden relative">
 
-
       {/* Main Chat Stream */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
-        {filteredHistory.length === 0 ? (
-          renderEmptyHistoryPlaceholder()
-        ) : (
-          filteredHistory.map((msg, index) => {
-            const isLastMessage = index === filteredHistory.length - 1;
-            const isAI = msg.sender === 'ai';
-            return (
-              <div key={index} ref={isLastMessage && isAI ? lastAIMessageRef : null}>
-                <MessageBubble message={msg} index={index} />
-              </div>
-            );
-          })
-        )}
+      {!isChoiceOrCompleted && (
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          {filteredHistory.length === 0 ? (
+            renderEmptyHistoryPlaceholder()
+          ) : (
+            filteredHistory.map((msg, index) => {
+              const isLastMessage = index === filteredHistory.length - 1;
+              const isAI = msg.sender === 'ai';
+              return (
+                <div key={index} ref={isLastMessage && isAI ? lastAIMessageRef : null}>
+                  <MessageBubble message={msg} index={index} />
+                </div>
+              );
+            })
+          )}
 
-        {isLoading && (
-          <div className="flex justify-start mb-4">
-            <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-tl-none p-4 shadow-sm">
-              <div className="flex space-x-1.5 items-center h-5">
-                <div className="w-2.5 h-2.5 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                <div className="w-2.5 h-2.5 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                <div className="w-2.5 h-2.5 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+          {isLoading && (
+            <div className="flex justify-start mb-4">
+              <div className="bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-tl-none p-4 shadow-sm">
+                <div className="flex space-x-1.5 items-center h-5">
+                  <div className="w-2.5 h-2.5 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="w-2.5 h-2.5 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="w-2.5 h-2.5 bg-primary-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+      )}
 
-      {/* Interactive Wizard Panel — flex-shrink-0: pinned above quick replies */}
-      <div className="flex-shrink-0">
+      {/* Interactive Wizard Panel */}
+      <div className={isChoiceOrCompleted ? "flex-1 min-h-0 flex flex-col overflow-hidden" : "flex-shrink-0"}>
         {renderWizardPanel()}
       </div>
 
-      {/* Quick Replies — flex-shrink-0: always visible */}
-      <div className="flex-shrink-0">
-        <QuickReplies stage={stage} subStage={subStage} onSelect={selectQuickReply} />
-      </div>
+      {/* Quick Replies */}
+      {!isChoiceOrCompleted && (
+        <div className="flex-shrink-0">
+          <QuickReplies stage={stage} subStage={subStage} onSelect={selectQuickReply} />
+        </div>
+      )}
     </div>
   );
 }

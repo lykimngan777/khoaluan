@@ -5,12 +5,13 @@ import { RefreshCw, CheckCircle, Circle, Loader, User } from 'lucide-react';
 const PIC_PHASES = [
   {
     id: 'G',
-    label: 'Thông tin chung',
+    label: 'Mở đầu',
     labelVi: 'Hồ sơ cá nhân',
     color: 'slate',
     stages: ['PRESCREENING'],
     steps: [
       { label: 'Thu thập hồ sơ cá nhân',          subStages: ['PROFILE_GATHERING'] },
+      { label: 'Phân loại đầu vào',   subStages: ['WELCOME', 'CLASSIFY_PATH', 'LISTING_CAREERS', 'EXPLAIN_INSUFFICIENT_CAREERS', 'SUGGEST_MORE_QUESTION'] },
     ],
   },
   {
@@ -20,9 +21,8 @@ const PIC_PHASES = [
     color: 'sky',
     stages: ['PRESCREENING'],
     steps: [
-      { label: 'Phân loại hướng khởi đầu',        subStages: ['WELCOME', 'CLASSIFY_PATH'] },
-      { label: 'Liệt kê / Gợi ý nghề nghiệp',     subStages: ['LISTING_CAREERS', 'EXPLAIN_INSUFFICIENT_CAREERS', 'SUGGEST_MORE_QUESTION'] },
-      { label: 'Sàng lọc & Xác nhận rút gọn',     subStages: ['CRITERIA_EVALUATION', 'SHORTLIST_CONFIRMATION'] },
+      { label: 'Đánh giá tiêu chí',                subStages: ['CRITERIA_EVALUATION'] },
+      { label: 'Gợi ý nghề nghiệp',                subStages: ['SHORTLIST_CONFIRMATION'] },
     ],
   },
   {
@@ -32,9 +32,7 @@ const PIC_PHASES = [
     color: 'amber',
     stages: ['IN_DEPTH'],
     steps: [
-      { label: 'Phân tích xu hướng & mức lương',    subStages: ['IN_DEPTH_EXPLORATION'] },
-      { label: 'Đánh giá khoảng cách năng lực',     subStages: ['IN_DEPTH_EXPLORATION'] },
-      { label: 'Ưu/nhược điểm từng nghề',           subStages: ['IN_DEPTH_EXPLORATION'] },
+      { label: 'Thông tin nghề nghiệp chi tiết',    subStages: ['IN_DEPTH_EXPLORATION', 'IN_DEPTH_CHAT'] },
     ],
   },
   {
@@ -44,10 +42,7 @@ const PIC_PHASES = [
     color: 'emerald',
     stages: ['CHOICE', 'COMPLETED'],
     steps: [
-      { label: 'So sánh & Xếp hạng nghề',           subStages: ['CHOICE_SELECTION'] },
-      { label: 'Chọn nghề mục tiêu & Xây lộ trình', subStages: ['GENERATE_ROADMAP'] },
-      { label: 'Kết nối chuyên gia / Điều chỉnh',   subStages: ['ROADMAP_DECISION', 'ROADMAP_ADJUSTMENT'] },
-      { label: 'Xác nhận & Theo dõi tiến độ',       subStages: ['COMPLETED'] },
+      { label: 'So sánh và đánh giá',           subStages: ['CHOICE_SELECTION', 'GENERATE_ROADMAP', 'ROADMAP_DECISION', 'ROADMAP_ADJUSTMENT', 'COMPLETED'] },
     ],
   },
 ];
@@ -59,6 +54,7 @@ const SUBSTAGE_ORDER = [
   'LISTING_CAREERS', 'EXPLAIN_INSUFFICIENT_CAREERS', 'SUGGEST_MORE_QUESTION',
   'CRITERIA_EVALUATION', 'SHORTLIST_CONFIRMATION',
   'IN_DEPTH_EXPLORATION',
+  'IN_DEPTH_CHAT',
   'CHOICE_SELECTION', 'GENERATE_ROADMAP',
   'ROADMAP_DECISION', 'ROADMAP_ADJUSTMENT',
   'COMPLETED',
@@ -81,11 +77,12 @@ function stepStatus(step, currentSubStage, furthestSubStage) {
 }
 
 function phaseStatus(phase, stage, subStage) {
+  const gSubStages = ['PROFILE_GATHERING', 'WELCOME', 'CLASSIFY_PATH', 'LISTING_CAREERS', 'EXPLAIN_INSUFFICIENT_CAREERS', 'SUGGEST_MORE_QUESTION'];
   if (phase.id === 'G') {
-    return subStage === 'PROFILE_GATHERING' ? 'active' : 'done';
+    return gSubStages.includes(subStage) ? 'active' : 'done';
   }
   if (phase.stages.includes(stage) && stage !== 'COMPLETED') {
-    if (phase.id === 'P' && subStage === 'PROFILE_GATHERING') return 'pending';
+    if (phase.id === 'P' && gSubStages.includes(subStage)) return 'pending';
     return 'active';
   }
   if (
@@ -170,13 +167,21 @@ export default function ProgressSidebar({
     <aside className="w-full lg:w-72 xl:w-80 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col h-full flex-shrink-0 overflow-hidden">
 
       {/* Logo — cố định, không co */}
-      <div className="px-5 pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 flex items-center gap-3 flex-shrink-0">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary-500 to-sky-400 flex items-center justify-center text-white shadow-lg shadow-primary-500/20 font-extrabold text-sm flex-shrink-0">
-          AI
+      <div className="px-5 pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 flex flex-col gap-3 flex-shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary-500 to-sky-400 flex items-center justify-center text-white shadow-lg shadow-primary-500/20 font-extrabold text-sm flex-shrink-0">
+            AI
+          </div>
+          <div>
+            <h2 className="font-bold text-slate-800 dark:text-slate-100 text-sm leading-tight">CareerAI Counselor</h2>
+            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Mô hình hướng nghiệp PIC</p>
+          </div>
         </div>
-        <div>
-          <h2 className="font-bold text-slate-800 dark:text-slate-100 text-sm leading-tight">CareerAI Counselor</h2>
-          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Mô hình hướng nghiệp PIC</p>
+        
+        {/* Helper Notification Banner */}
+        <div className="px-3 py-2 bg-indigo-50/60 dark:bg-indigo-950/20 border border-indigo-100/80 dark:border-indigo-900/30 rounded-xl text-[10px] text-indigo-700 dark:text-indigo-300 font-medium flex items-start gap-1.5 leading-snug shadow-sm select-none">
+          <span className="shrink-0 text-xs">💡</span>
+          <span>Bấm vào các bước có tích xanh (✓) để quay lại và sửa đổi thông tin.</span>
         </div>
       </div>
 

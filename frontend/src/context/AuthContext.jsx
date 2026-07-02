@@ -90,7 +90,7 @@ export function AuthProvider({ children }) {
       return { success: false, error: 'Email hoặc mật khẩu không chính xác.' };
     }
 
-    const userData = { id: found.id, name: found.name, email: found.email };
+    const userData = { id: found.id, name: found.name, email: found.email, role: found.role || 'user' };
     localStorage.setItem('careerai_user', JSON.stringify(userData));
     setUser(userData);
     setToken('local_token_' + found.id);
@@ -140,13 +140,14 @@ export function AuthProvider({ children }) {
       name,
       email,
       password,
+      role: 'user',
       createdAt: new Date().toISOString()
     };
 
     users.push(newUser);
     localStorage.setItem('careerai_users', JSON.stringify(users));
 
-    const userData = { id: newUser.id, name: newUser.name, email: newUser.email };
+    const userData = { id: newUser.id, name: newUser.name, email: newUser.email, role: 'user' };
     localStorage.setItem('careerai_user', JSON.stringify(userData));
     setUser(userData);
     setToken('local_token_' + newUser.id);

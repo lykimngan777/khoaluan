@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 const API_BASE = import.meta.env.VITE_API_URL 
   ? `${import.meta.env.VITE_API_URL}/api/chat` 
@@ -51,6 +52,19 @@ export function useChatSession() {
   const [expertConsulted, setExpertConsulted] = useState(false);
   const [finalRoadmap, setFinalRoadmap] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { user } = useAuth();
+
+  // Associate session when user logs in
+  useEffect(() => {
+    if (user && sessionId) {
+      fetch(`${API_BASE}/session/${sessionId}/associate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, userName: user.name })
+      }).catch(err => console.warn("Failed to associate session with user:", err));
+    }
+  }, [user, sessionId]);
 
   // Initialize session ID
   useEffect(() => {
@@ -317,6 +331,57 @@ export function useChatSession() {
     }
   };
 
+  // Load a historical session to active session (for viewing/resuming)
+  const loadHistoricalSession = (sessionData) => {
+    setStage(sessionData.stage || 'PRESCREENING');
+    setSubStage(sessionData.subStage || 'WELCOME');
+    setFurthestSubStage(sessionData.furthestSubStage || sessionData.subStage || 'PROFILE_GATHERING');
+    setHistory(sessionData.history || []);
+    setSelectedCriteria(sessionData.selectedCriteria || []);
+    setShortlistedCareers(sessionData.shortlistedCareers || []);
+    setUserProposedCareers(sessionData.userProposedCareers || []);
+    setSelectedCareer(sessionData.selectedCareer || null);
+    setProfileInfo(sessionData.profileInfo || { interests: '', academic: '', skills: '', experience: '', goals: '' });
+    setExpertConsulted(sessionData.expertConsulted || false);
+    setFinalRoadmap(sessionData.finalRoadmap || null);
+
+    setSessionId(sessionData.id);
+    localStorage.setItem('careerai_session_id', sessionData.id);
+  };
+
+  // Fetch consultation history from backend for a specific user
+  const fetchUserHistory = async (userId) => {
+    try {
+      const res = await fetch(`${API_BASE}/history/${userId}`);
+      if (res.ok) {
+        return await res.json();
+      }
+      return [];
+    } catch (err) {
+      console.error("Error fetching user consultation history:", err);
+      return [];
+    }
+  };
+
+  // Delete a session from history
+  const deleteSession = async (id) => {
+    try {
+      const res = await fetch(`${API_BASE}/session/${id}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        if (id === sessionId) {
+          resetSession();
+        }
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error("Error deleting session:", err);
+      return false;
+    }
+  };
+
   return {
     stage,
     setStage,
@@ -343,6 +408,9 @@ export function useChatSession() {
     setFinalRoadmap,
     isLoading,
     resetSession,
-    updateSession
+    updateSession,
+    loadHistoricalSession,
+    fetchUserHistory,
+    deleteSession
   };
 }

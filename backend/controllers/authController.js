@@ -50,7 +50,8 @@ exports.register = async (req, res) => {
       user: {
         id: newUser.id,
         name: newUser.name,
-        email: newUser.email
+        email: newUser.email,
+        role: newUser.role || 'user'
       }
     });
 
@@ -97,7 +98,9 @@ exports.login = async (req, res) => {
       user: {
         id: user.id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        role: user.role || 'user',
+        title: user.title || null
       }
     });
 

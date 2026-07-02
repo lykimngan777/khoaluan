@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const chatRoutes = require('./routes/chat');
 const authRoutes = require('./routes/auth');
+const expertRoutes = require('./routes/expert');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -14,6 +15,7 @@ app.use(express.json());
 // Routes
 app.use('/api/chat', chatRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/expert', expertRoutes);
 
 // Base route
 app.get('/', (req, res) => {

@@ -1,0 +1,44 @@
+[
+  {
+    "id": "sess_thtx7pu0l",
+    "userId": "mr31z6usir24k",
+    "userName": "a",
+    "stage": "PRESCREENING",
+    "subStage": "PROFILE_GATHERING",
+    "history": [
+      {
+        "sender": "ai",
+        "text": "Chào bạn! Mình là CareerAI, trợ lý hướng nghiệp cá nhân của bạn. Rất vui được đồng hành cùng bạn trên hành trình định hình tương lai theo mô hình PIC (Sàng lọc - Khám phá - Lựa chọn).\n\nĐể bắt đầu, **vui lòng nhập thông tin hồ sơ học tập và kinh nghiệm của bạn** ở bảng điều khiển bên dưới để mình có cơ sở phân tích và tư vấn chính xác nhất nhé!",
+        "timestamp": "2026-07-02T09:51:20.322Z",
+        "stage": "PRESCREENING"
+      }
+    ],
+    "selectedCriteria": [],
+    "shortlistedCareers": [],
+    "selectedCareer": null,
+    "profileInfo": {},
+    "finalRoadmap": null,
+    "updatedAt": "2026-07-02T11:53:29.347Z"
+  },
+  {
+    "id": "sess_9u9qc0je3",
+    "userId": "expert_001",
+    "userName": "Chuyên gia Hướng nghiệp",
+    "stage": "PRESCREENING",
+    "subStage": "PROFILE_GATHERING",
+    "history": [
+      {
+        "sender": "ai",
+        "text": "Chào bạn! Mình là CareerAI, trợ lý hướng nghiệp cá nhân của bạn. Rất vui được đồng hành cùng bạn trên hành trình định hình tương lai theo mô hình PIC (Sàng lọc - Khám phá - Lựa chọn).\n\nĐể bắt đầu, **vui lòng nhập thông tin hồ sơ học tập và kinh nghiệm của bạn** ở bảng điều khiển bên dưới để mình có cơ sở phân tích và tư vấn chính xác nhất nhé!",
+        "timestamp": "2026-07-02T09:40:39.039Z",
+        "stage": "PRESCREENING"
+      }
+    ],
+    "selectedCriteria": [],
+    "shortlistedCareers": [],
+    "selectedCareer": null,
+    "profileInfo": {},
+    "finalRoadmap": null,
+    "updatedAt": "2026-07-02T09:46:22.978Z"
+  }
+]

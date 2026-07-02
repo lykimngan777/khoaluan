@@ -1,5 +1,6 @@
 const sessionStore = require('../utils/sessionStore');
 const openaiService = require('../services/openaiService');
+const historyStore = require('../utils/historyStore');
 
 /**
  * Initialize a new session or get an existing one
@@ -95,7 +96,7 @@ exports.sendMessage = async (req, res) => {
       sender: 'ai',
       text: aiResponse.text,
       timestamp: new Date(),
-      stage: responseStage
+      stage: session.stage
     });
 
     // 6. Update session
@@ -108,6 +109,9 @@ exports.sendMessage = async (req, res) => {
       shortlistedCareers: session.shortlistedCareers,
       finalRoadmap: session.finalRoadmap
     });
+
+    // 7. Save to persistent history if user is logged in
+    historyStore.saveToHistory(session);
 
     res.json({
       reply: aiResponse.text,
@@ -139,9 +143,90 @@ exports.updateSessionData = (req, res) => {
     if (!updatedSession) {
       return res.status(404).json({ error: "Không thể cập nhật, không tìm thấy phiên" });
     }
+    
+    // Save to persistent history if user is logged in
+    historyStore.saveToHistory(updatedSession);
+
     res.json(updatedSession);
   } catch (error) {
     console.error("Error in updateSessionData:", error);
     res.status(500).json({ error: "Không thể cập nhật phiên làm việc" });
+  }
+};
+
+/**
+ * Associate session with a logged-in user
+ */
+exports.associateSession = (req, res) => {
+  const { id } = req.params;
+  const { userId, userName } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ error: "Yêu cầu cung cấp userId" });
+  }
+
+  try {
+    const session = sessionStore.getSession(id);
+    if (!session) {
+      return res.status(404).json({ error: "Không tìm thấy phiên làm việc" });
+    }
+
+    session.userId = userId;
+    session.userName = userName || 'User';
+
+    // Persist to history immediately
+    historyStore.saveToHistory(session);
+
+    res.json({ success: true, session });
+  } catch (error) {
+    console.error("Error in associateSession:", error);
+    res.status(500).json({ error: "Không thể liên kết tài khoản với phiên làm việc" });
+  }
+};
+
+/**
+ * Get consultation history for a user
+ */
+exports.getUserConsultationHistory = (req, res) => {
+  const { userId } = req.params;
+  try {
+    const historyList = historyStore.getUserHistory(userId);
+    res.json(historyList);
+  } catch (error) {
+    console.error("Error in getUserConsultationHistory:", error);
+    res.status(500).json({ error: "Không thể lấy lịch sử tư vấn" });
+  }
+};
+
+/**
+ * Send message to expert AI counselor and get response
+ */
+exports.sendExpertMessage = async (req, res) => {
+  const { message, career, history } = req.body;
+
+  if (!message || !career) {
+    return res.status(400).json({ error: "Thiếu thông tin message hoặc career" });
+  }
+
+  try {
+    const replyText = await openaiService.getAIExpertResponse(message, career, history);
+    res.json({ reply: replyText });
+  } catch (error) {
+    console.error("Error in sendExpertMessage controller:", error);
+    res.status(500).json({ error: "Đã xảy ra lỗi khi xử lý tin nhắn của bạn." });
+  }
+};
+
+/**
+ * Delete a session from history
+ */
+exports.deleteSession = (req, res) => {
+  const { id } = req.params;
+  try {
+    historyStore.deleteSessionFromHistory(id);
+    res.json({ success: true, message: "Đã xóa phiên tư vấn thành công" });
+  } catch (error) {
+    console.error("Error in deleteSession:", error);
+    res.status(500).json({ error: "Không thể xóa phiên tư vấn này" });
   }
 };

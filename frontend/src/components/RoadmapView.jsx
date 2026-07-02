@@ -6,6 +6,15 @@ import {
   Plus, Check, ExternalLink, Edit3, Save, BookOpen, Link, Sparkles,
   X, Send, MessageSquare
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+
+const API_BASE = import.meta.env.VITE_API_URL 
+  ? `${import.meta.env.VITE_API_URL}/api/chat` 
+  : '/api/chat';
+
+const EXPERT_API_BASE = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api/expert`
+  : '/api/expert';
 
 const DEFAULT_ROADMAPS = {
   "Kỹ sư Phần mềm": {
@@ -41,9 +50,9 @@ const DEFAULT_ROADMAPS = {
       }
     ],
     courses: [
-      { title: "JavaScript Algorithms and Data Structures", provider: "freeCodeCamp" },
-      { title: "React - The Complete Guide", provider: "Academind (Udemy)" },
-      { title: "CS50's Introduction to Computer Science", provider: "Harvard University (edX)" }
+      { title: "JavaScript Algorithms and Data Structures", provider: "freeCodeCamp", url: "https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/" },
+      { title: "React - The Complete Guide", provider: "Academind (Udemy)", url: "https://www.udemy.com/course/react-the-complete-guide-incl-redux/" },
+      { title: "CS50's Introduction to Computer Science", provider: "Harvard University (edX)", url: "https://www.edx.org/learn/computer-science/harvard-university-cs50-s-introduction-to-computer-science" }
     ],
     certificates: [
       "Meta Front-End Developer Professional Certificate",
@@ -83,14 +92,36 @@ const DEFAULT_ROADMAPS = {
       }
     ],
     courses: [
-      { title: "Google Digital Marketing & E-commerce Professional Certificate", provider: "Google (Coursera)" },
-      { title: "Search Engine Optimization (SEO) Specialization", provider: "UC Davis (Coursera)" }
+      { title: "Google Digital Marketing & E-commerce Professional Certificate", provider: "Google (Coursera)", url: "https://www.coursera.org/professional-certificates/google-digital-marketing-ecommerce" },
+      { title: "Search Engine Optimization (SEO) Specialization", provider: "UC Davis (Coursera)", url: "https://www.coursera.org/specializations/seo" }
     ],
     certificates: [
       "Google Analytics Individual Qualification (GAIQ)",
       "HubSpot Inbound Marketing Certification"
     ]
   }
+};
+
+// Helper to determine the direct URL or search query for recommended courses
+const getCourseUrl = (course) => {
+  if (course.url) return course.url;
+  
+  const query = encodeURIComponent(course.title);
+  const prov = (course.provider || '').toLowerCase();
+  
+  if (prov.includes('coursera')) {
+    return `https://www.coursera.org/search?query=${query}`;
+  }
+  if (prov.includes('udemy')) {
+    return `https://www.udemy.com/courses/search/?q=${query}`;
+  }
+  if (prov.includes('freecodecamp')) {
+    return `https://www.freecodecamp.org/search?query=${query}`;
+  }
+  if (prov.includes('edx')) {
+    return `https://www.edx.org/search?q=${query}`;
+  }
+  return `https://www.google.com/search?q=${encodeURIComponent(course.title + ' ' + (course.provider || ''))}`;
 };
 
 export default function RoadmapView({ selectedCareer, finalRoadmap, setExpertConsulted, sendMessage, setActiveTab }) {
@@ -129,114 +160,221 @@ export default function RoadmapView({ selectedCareer, finalRoadmap, setExpertCon
   const [recreateFeedback, setRecreateFeedback] = useState('');
 
   // Mini chatbot popup states
+  const { user } = useAuth();
   const [isMiniChatOpen, setIsMiniChatOpen] = useState(false);
   const [miniChatInput, setMiniChatInput] = useState('');
   const [isExpertTyping, setIsExpertTyping] = useState(false);
   const [miniChatHistory, setMiniChatHistory] = useState([]);
+  const [activeSession, setActiveSession] = useState(null);
 
   const miniChatEndRef = useRef(null);
 
-  // Sync welcome message on career change
+  // Sync welcome message on career change (Fallback simulator welcome message)
   useEffect(() => {
+    if (activeSession) return; // Skip if we have an active real session
     const career = currentRoadmap.careerName || 'Kỹ sư Phần mềm';
     let welcomeMsg = '';
-    let expertName = 'Thầy Nguyễn Văn A';
-    let title = 'Chuyên gia Công nghệ';
-    
+
     if (career.toLowerCase().includes('phần mềm') || career.toLowerCase().includes('software')) {
       welcomeMsg = "Chào em! Thầy là Nguyễn Văn A, chuyên gia hướng nghiệp ngành CNTT. Thầy đã xem qua lộ trình Kỹ sư Phần mềm của em. Lộ trình thiết kế rất tốt, tuy nhiên thầy khuyên em ở Giai đoạn 2 nên tập trung học thêm về Git/GitHub nâng cao và Docker. Ở Giai đoạn 3, hãy bắt đầu nộp CV thực tập sớm từ tháng thứ 8 để cọ xát thực tế nhé. Em có câu hỏi gì cần thầy hỗ trợ thêm không?";
     } else if (career.toLowerCase().includes('marketing') || career.toLowerCase().includes('marketer')) {
-      expertName = 'Thầy Trần Minh B';
-      title = 'Chuyên gia Marketing';
       welcomeMsg = "Chào em! Thầy là Trần Minh B, chuyên gia hướng nghiệp ngành Digital Marketing. Thầy đã xem qua lộ trình Chuyên viên Marketing Số của em. Lộ trình rất chi tiết, nhưng thầy khuyên em nên tập trung thực hành chạy chiến dịch thực tế với ngân sách nhỏ ở Giai đoạn 2 và rèn luyện kỹ năng viết content SEO. Em có câu hỏi gì cần thầy hỗ trợ thêm không?";
     } else if (career.toLowerCase().includes('thiết kế') || career.toLowerCase().includes('designer') || career.toLowerCase().includes('ux/ui')) {
-      expertName = 'Cô Lê Thị C';
-      title = 'Chuyên gia UX/UI';
       welcomeMsg = "Chào em! Cô là Lê Thị C, chuyên gia hướng nghiệp ngành UX/UI Design. Cô đã xem qua lộ trình thiết kế của em. Lộ trình đi rất đúng hướng. Cô khuyên em nên chú trọng làm các dự án thực tế trên Figma để xây dựng Portfolio thật ấn tượng trong Giai đoạn 2 & 3. Em có câu hỏi nào cần cô giải đáp thêm không?";
     } else {
-      welcomeMsg = `Chào em! Thầy đã xem qua lộ trình phát triển của em cho nghề ${career}. Lộ trình này rất hợp lý và đi từ nền tảng đến thực hành. Thầy khuyên em nên chú trọng xây dựng các sản phẩm thực tế để đưa vào Portfolio ở Giai đoạn 2. Em có câu hỏi gì cần thầy tư vấn thêm không?`;
+      welcomeMsg = `Chào em! Thầy đã xem qua lộ trình phát triển của em cho nghề ${career}. Lộ trình này rất hợp lý và được thiết kế bài bản. Em cứ bám sát và đặt câu hỏi nếu cần hỗ trợ nhé!`;
     }
+
+    const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     setMiniChatHistory([
-      {
-        sender: 'user',
-        text: 'Tư vấn với chuyên gia',
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      },
-      { 
-        sender: 'expert', 
-        text: welcomeMsg, 
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        expertName,
-        title
-      }
+      { sender: 'user', text: 'Tư vấn với chuyên gia', time: now },
+      { sender: 'expert', text: welcomeMsg, time: now },
     ]);
-  }, [currentRoadmap.careerName]);
+  }, [currentRoadmap, activeSession]);
 
-  // Scroll to bottom of mini-chat
+  // Create or fetch real consulting session when chat is opened
   useEffect(() => {
-    if (isMiniChatOpen) {
-      setTimeout(() => {
-        miniChatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }, 50);
-    }
-  }, [miniChatHistory, isExpertTyping, isMiniChatOpen]);
+    if (!isMiniChatOpen || !user) return;
 
-  // Handle sending message in mini-chat
-  const handleSendMiniMessage = (e) => {
+    const initExpertSession = async () => {
+      try {
+        const res = await fetch(`${EXPERT_API_BASE}/sessions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: user.id,
+            userName: user.name,
+            careerName: currentRoadmap.careerName || 'Kỹ sư Phần mềm'
+          })
+        });
+        if (res.ok) {
+          const session = await res.json();
+          setActiveSession(session);
+          
+          const formattedHistory = session.messages.map(m => ({
+            sender: m.sender,
+            text: m.text,
+            time: new Date(m.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }));
+          setMiniChatHistory(formattedHistory);
+        }
+      } catch (err) {
+        console.warn("Failed to create real expert session:", err);
+      }
+    };
+
+    initExpertSession();
+  }, [isMiniChatOpen, user, currentRoadmap.careerName]);
+
+  // Poll session messages every 3 seconds
+  useEffect(() => {
+    if (!isMiniChatOpen || !activeSession) return;
+
+    const pollSession = async () => {
+      try {
+        const res = await fetch(`${EXPERT_API_BASE}/sessions/${activeSession.id}`);
+        if (res.ok) {
+          const session = await res.json();
+          setActiveSession(session);
+          
+          const formattedHistory = session.messages.map(m => ({
+            sender: m.sender,
+            text: m.text,
+            time: new Date(m.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }));
+          setMiniChatHistory(formattedHistory);
+        }
+      } catch (err) {
+        console.warn("Error polling expert session:", err);
+      }
+    };
+
+    const interval = setInterval(pollSession, 3000);
+    return () => clearInterval(interval);
+  }, [isMiniChatOpen, activeSession?.id]);
+
+  const handleSendMiniMessage = async (e) => {
     e?.preventDefault();
     if (!miniChatInput.trim()) return;
 
+    const currentInput = miniChatInput;
+    setMiniChatInput('');
+
+    if (activeSession) {
+      const userMsg = {
+        sender: 'user',
+        text: currentInput,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      setMiniChatHistory(prev => [...prev, userMsg]);
+
+      try {
+        const response = await fetch(`${EXPERT_API_BASE}/sessions/${activeSession.id}/message`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sender: 'user',
+            senderName: user?.name || 'User',
+            text: currentInput
+          })
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setActiveSession(data.session);
+          const formattedHistory = data.session.messages.map(m => ({
+            sender: m.sender,
+            text: m.text,
+            time: new Date(m.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }));
+          setMiniChatHistory(formattedHistory);
+        }
+      } catch (err) {
+        console.warn("Failed to send real-time expert message:", err);
+      }
+      return;
+    }
+
     const userMsg = {
       sender: 'user',
-      text: miniChatInput,
+      text: currentInput,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
     setMiniChatHistory(prev => [...prev, userMsg]);
-    const currentInput = miniChatInput;
-    setMiniChatInput('');
     setIsExpertTyping(true);
 
-    // Simulate expert response
-    setTimeout(() => {
-      let replyText = '';
-      const lowerInput = currentInput.toLowerCase();
-      const career = currentRoadmap.careerName || 'Kỹ sư Phần mềm';
-      
-      if (lowerInput.includes('lương') || lowerInput.includes('thu nhập') || lowerInput.includes('tiền')) {
-        if (career.toLowerCase().includes('phần mềm') || career.toLowerCase().includes('software')) {
-          replyText = "Với Kỹ sư Phần mềm ở Việt Nam, lương fresher mới ra trường dao động khoảng 10-18 triệu VNĐ. Sau 2-3 năm kinh nghiệm (Senior) có thể đạt 25-40 triệu VNĐ. Đặc biệt nếu em có ngoại ngữ tốt và làm cho công ty nước ngoài (remote hoặc onsite), thu nhập có thể đạt từ $2,000 đến $4,500/tháng đấy.";
-        } else if (career.toLowerCase().includes('marketing') || career.toLowerCase().includes('marketer')) {
-          replyText = "Ngành Digital Marketing có dải lương khá rộng. Mới ra trường (fresher) tầm 8-12 triệu VNĐ. Khi em có kinh nghiệm tối ưu chiến dịch (2-4 năm) lương sẽ từ 15-25 triệu VNĐ. Vị trí Manager trở lên có thể đạt 30-50 triệu VNĐ/tháng, tuỳ thuộc vào KPI doanh số em đem lại.";
-        } else {
-          replyText = "Mức lương của ngành này tại thị trường Việt Nam rất hứa hẹn, fresher từ 8-15 triệu VNĐ và tăng trưởng nhanh theo số năm kinh nghiệm thực tế của em.";
-        }
-      } else if (lowerInput.includes('chứng chỉ') || lowerInput.includes('bằng') || lowerInput.includes('certificate')) {
-        if (career.toLowerCase().includes('phần mềm') || career.toLowerCase().includes('software')) {
-          replyText = "Về chứng chỉ, em nên ưu tiên các chứng chỉ Cloud (AWS Certified Cloud Practitioner hoặc Developer Associate) vì xu hướng Cloud đang rất hot. Ngoài ra các chứng chỉ ngoại ngữ như TOEIC 750+ hoặc IELTS 6.5+ là lợi thế cực kỳ lớn khi ứng tuyển.";
-        } else if (career.toLowerCase().includes('marketing') || career.toLowerCase().includes('marketer')) {
-          replyText = "Em hãy thi lấy chứng chỉ Google Analytics (GAIQ), HubSpot Inbound Marketing, và Facebook Blueprint. Đây là những chứng chỉ miễn phí hoặc chi phí thấp nhưng được các Agency tuyển dụng đánh giá rất cao.";
-        } else {
-          replyText = "Em nên tập trung vào các chứng chỉ nghề nghiệp của Coursera (Google Professional Certificates) và chứng chỉ ngoại ngữ. Đó là minh chứng rõ nhất cho nỗ lực tự học của em.";
-        }
-      } else if (lowerInput.includes('thực tập') || lowerInput.includes('intern') || lowerInput.includes('xin việc')) {
-        replyText = "Để xin thực tập thành công, điều cốt lõi là em phải có sản phẩm thực tế (Portfolio). Đừng chỉ ghi lý thuyết suông trong CV. Hãy đính kèm link GitHub (đối với code) hoặc link Figma (đối với design) hay các bản kế hoạch chạy campaign (đối với Marketing) để nhà tuyển dụng đánh giá năng lực thực hành của em.";
-      } else if (lowerInput.includes('học ở đâu') || lowerInput.includes('khóa học') || lowerInput.includes('tài liệu')) {
-        replyText = "Thầy khuyên em bám sát các khóa học ghi trong lộ trình (như Coursera, Udemy). Bên cạnh đó, các nguồn miễn phí như freeCodeCamp, W3Schools, các kênh YouTube chuyên ngành cũng rất tốt. Quan trọng là em phải tự code, tự làm dự án thực tế chứ không chỉ xem video lý thuyết.";
-      } else {
-        replyText = "Ý kiến/câu hỏi của em rất thực tế. Đối với ngành này, điều quan trọng nhất là tính kiên trì và tự học liên tục. Em hãy chia nhỏ lộ trình ra từng tuần và thực hiện đều đặn. Nếu gặp khó khăn ở giai đoạn nào, hãy nhắn tin trao đổi tiếp với thầy nhé!";
-      }
+    const career = currentRoadmap.careerName || 'Kỹ sư Phần mềm';
 
-      setMiniChatHistory(prev => [
-        ...prev,
-        {
-          sender: 'expert',
-          text: replyText,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    try {
+      const response = await fetch(`${API_BASE}/expert-message`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: currentInput,
+          career: career,
+          history: miniChatHistory
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setMiniChatHistory(prev => [
+          ...prev,
+          {
+            sender: 'expert',
+            text: data.reply,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }
+        ]);
+      } else {
+        throw new Error("HTTP error " + response.status);
+      }
+    } catch (err) {
+      console.warn("API Server offline or error. Simulating response on client.", err);
+      setTimeout(() => {
+        let replyText = '';
+        const lowerInput = currentInput.toLowerCase();
+        
+        if (lowerInput.trim() === 'hi' || lowerInput.trim() === 'hello' || lowerInput.includes('chào') || lowerInput === 'alo' || lowerInput === 'helo' || lowerInput.includes('thầy ơi')) {
+          replyText = `Chào em! Thầy là chuyên gia hướng nghiệp hỗ trợ cho nghề **${career}**. Em cần thầy giải đáp thắc mắc gì về mức lương, các khóa học, chứng chỉ hay cơ hội thực tập của nghề này?`;
+        } else if (lowerInput.includes('cảm ơn') || lowerInput.includes('cám ơn') || lowerInput.includes('thank') || lowerInput === 'ok' || lowerInput === 'vâng') {
+          replyText = `Không có gì em nhé! Chúc em học tập thật tốt và kiên trì bám sát lộ trình. Nếu có thêm thắc mắc gì, cứ nhắn cho thầy bất cứ lúc nào.`;
+        } else if (lowerInput.includes('lương') || lowerInput.includes('thu nhập') || lowerInput.includes('tiền')) {
+          if (career.toLowerCase().includes('phần mềm') || career.toLowerCase().includes('software')) {
+            replyText = "Với Kỹ sư Phần mềm ở Việt Nam, lương fresher mới ra trường dao động khoảng 10-18 triệu VNĐ. Sau 2-3 năm kinh nghiệm (Senior) có thể đạt 25-40 triệu VNĐ. Đặc biệt nếu em có ngoại ngữ tốt và làm cho công ty nước ngoài (remote hoặc onsite), thu nhập có thể đạt từ $2,000 đến $4,500/tháng đấy.";
+          } else if (career.toLowerCase().includes('marketing') || career.toLowerCase().includes('marketer')) {
+            replyText = "Ngành Digital Marketing có dải lương khá rộng. Mới ra trường (fresher) tầm 8-12 triệu VNĐ. Khi em có kinh nghiệm tối ưu chiến dịch (2-4 năm) lương sẽ từ 15-25 triệu VNĐ. Vị trí Manager trở lên có thể đạt 30-50 triệu VNĐ/tháng, tuỳ thuộc vào KPI doanh số em đem lại.";
+          } else {
+            replyText = "Mức lương của ngành này tại thị trường Việt Nam rất hứa hẹn, fresher từ 8-15 triệu VNĐ và tăng trưởng nhanh theo số năm kinh nghiệm thực tế của em.";
+          }
+        } else if (lowerInput.includes('chứng chỉ') || lowerInput.includes('bằng') || lowerInput.includes('certificate')) {
+          if (career.toLowerCase().includes('phần mềm') || career.toLowerCase().includes('software')) {
+            replyText = "Về chứng chỉ, em nên ưu thiện các chứng chỉ Cloud (AWS Certified Cloud Practitioner hoặc Developer Associate) vì xu hướng Cloud đang rất hot. Ngoài ra các chứng chỉ ngoại ngữ như TOEIC 750+ hoặc IELTS 6.5+ là lợi thế cực kỳ lớn khi ứng tuyển.";
+          } else if (career.toLowerCase().includes('marketing') || career.toLowerCase().includes('marketer')) {
+            replyText = "Em hãy thi lấy chứng chỉ Google Analytics (GAIQ), HubSpot Inbound Marketing, và Facebook Blueprint. Đây là những chứng chỉ mini-chat hoặc chi phí thấp nhưng được các Agency tuyển dụng đánh giá rất cao.";
+          } else {
+            replyText = "Em nên tập trung vào các chứng chỉ nghề nghiệp của Coursera (Google Professional Certificates) và chứng chỉ ngoại ngữ. Đó là minh chứng rõ nhất cho nỗ lực tự học của em.";
+          }
+        } else if (lowerInput.includes('thực tập') || lowerInput.includes('intern') || lowerInput.includes('xin việc')) {
+          replyText = "Để xin thực tập thành công, điều cốt lõi là em phải có sản phẩm thực tế (Portfolio). Đừng chỉ ghi lý thuyết suông trong CV. Hãy đính kèm link GitHub (đối với code) hoặc link Figma (đối với design) hay các bản kế hoạch chạy campaign (đối với Marketing) để nhà tuyển dụng đánh giá năng lực thực hành của em.";
+        } else if (lowerInput.includes('học ở đâu') || lowerInput.includes('khóa học') || lowerInput.includes('tài liệu')) {
+          replyText = "Thầy khuyên em bám sát các khóa học ghi trong lộ trình (như Coursera, Udemy). Bên cạnh đó, các nguồn miễn phí như freeCodeCamp, W3Schools, các kênh YouTube chuyên ngành cũng rất tốt. Quan trọng là em phải tự code, tự làm dự án thực tế chứ không chỉ xem video lý thuyết.";
+        } else {
+          replyText = `Ý kiến/câu hỏi của em về ngành **${career}** rất thực tế. Đối với ngành này, điều quan trọng nhất là tính kiên trì và tự học liên tục. Em hãy chia nhỏ lộ trình ra từng tuần và thực hiện đều đặn. Nếu gặp khó khăn ở giai đoạn nào, hãy nhắn tin trao đổi tiếp với thầy nhé!`;
         }
-      ]);
+
+        setMiniChatHistory(prev => [
+          ...prev,
+          {
+            sender: 'expert',
+            text: replyText,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          }
+        ]);
+      }, 1000);
+    } finally {
       setIsExpertTyping(false);
-    }, 1500);
+    }
   };
 
   const certInputRef = useRef(null);
@@ -616,17 +754,32 @@ export default function RoadmapView({ selectedCareer, finalRoadmap, setExpertCon
             Khóa học đề xuất
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {currentRoadmap.courses.map((course, idx) => (
-              <div key={idx} className="p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-100 dark:border-slate-800 flex justify-between items-center group hover:border-primary-200 dark:hover:border-primary-700 transition-colors cursor-pointer">
-                <div>
-                  <h4 className="font-semibold text-xs text-slate-800 dark:text-slate-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                    {course.title}
-                  </h4>
-                  <p className="text-[10px] text-slate-400 mt-1">{course.provider}</p>
-                </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 flex-shrink-0" />
-              </div>
-            ))}
+            {currentRoadmap.courses.map((course, idx) => {
+              const courseUrl = getCourseUrl(course);
+              return (
+                <a
+                  key={idx}
+                  href={courseUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-4 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-100 dark:border-slate-800 flex justify-between items-center group hover:border-primary-200 dark:hover:border-primary-700 hover:bg-slate-100/30 dark:hover:bg-slate-800/60 transition-all hover:shadow-sm duration-200 cursor-pointer"
+                  title="Nhấp để truy cập khóa học trực tiếp"
+                >
+                  <div className="min-w-0 pr-2">
+                    <h4 className="font-semibold text-xs text-slate-800 dark:text-slate-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors truncate">
+                      {course.title}
+                    </h4>
+                    <div className="flex items-center gap-2 mt-1 flex-wrap">
+                      <span className="text-[10px] text-slate-400">{course.provider}</span>
+                      <span className="text-[9px] px-1.5 py-0.5 bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 rounded-md border border-sky-100 dark:border-sky-900/30 font-medium">
+                        Vào khóa học ↗
+                      </span>
+                    </div>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-primary-500 transition-colors flex-shrink-0" />
+                </a>
+              );
+            })}
           </div>
         </div>
 
@@ -759,7 +912,15 @@ export default function RoadmapView({ selectedCareer, finalRoadmap, setExpertCon
       {/* Floating Chatbot Button — rendered via portal to bypass parent transform/overflow */}
       {!isMiniChatOpen && createPortal(
         <div
-          onClick={() => setIsMiniChatOpen(true)}
+          onClick={() => {
+            if (!user) {
+              if (window.confirm("Bạn cần đăng nhập để kết nối với chuyên gia thực tế. Chuyển đến trang Đăng nhập?")) {
+                if (setActiveTab) setActiveTab('login');
+              }
+              return;
+            }
+            setIsMiniChatOpen(true);
+          }}
           className="fixed bottom-6 right-6 flex items-center gap-3 z-50 group no-print cursor-pointer animate-fade-in"
         >
           <div className="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-extrabold px-3.5 py-2.5 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 transition-all duration-300 hover:scale-105 select-none hover:shadow-2xl">
@@ -788,11 +949,13 @@ export default function RoadmapView({ selectedCareer, finalRoadmap, setExpertCon
               </div>
               <div>
                 <h4 className="font-bold text-xs leading-none">
-                  {miniChatHistory.find(m => m.expertName)?.expertName || 'Chuyên gia Hướng nghiệp'}
+                  {activeSession ? 'Chuyên gia Hướng nghiệp' : (miniChatHistory.find(m => m.expertName)?.expertName || 'Chuyên gia Hướng nghiệp')}
                 </h4>
                 <span className="text-[9px] text-emerald-100 flex items-center gap-1 mt-1 font-medium">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
-                  {miniChatHistory.find(m => m.title)?.title || 'Chuyên gia'} · Đang trực tuyến
+                  <span className={`w-1.5 h-1.5 rounded-full ${activeSession?.status === 'pending' ? 'bg-amber-300 animate-pulse' : 'bg-emerald-300 animate-pulse'}`}></span>
+                  {activeSession
+                    ? (activeSession.status === 'pending' ? 'Đang kết nối...' : activeSession.status === 'active' ? 'Đang tư vấn trực tiếp' : 'Đã kết thúc')
+                    : 'Đang trực tuyến'}
                 </span>
               </div>
             </div>
