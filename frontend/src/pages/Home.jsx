@@ -47,9 +47,14 @@ export default function Home({ setActiveTab, chatState }) {
           Giải pháp hướng nghiệp ứng dụng AI & Khoa học Hành vi
         </div>
 
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100 max-w-4xl leading-tight">
-          Định hình Tương lai Nghề nghiệp <br />
-          Với Sự Trợ Giúp Từ <span className="bg-gradient-to-r from-primary-600 to-indigo-500 bg-clip-text text-transparent">Trí Tuệ Nhân Tạo</span>
+        <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-800 dark:text-slate-100 max-w-5xl leading-tight flex flex-col gap-1 sm:gap-2">
+          <span className="block">Định hình Tương lai Nghề nghiệp</span>
+          <span className="block">
+            Với Sự Trợ Giúp Từ{' '}
+            <span className="bg-gradient-to-r from-primary-600 to-indigo-500 bg-clip-text text-transparent">
+              Trí Tuệ Nhân Tạo
+            </span>
+          </span>
         </h1>
 
         <p className="mt-6 text-base md:text-xl text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
