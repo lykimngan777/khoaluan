@@ -23,7 +23,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Arial', 'sans-serif'],
+        sans: ['Inter', 'sans-serif'],
       },
     },
   },
