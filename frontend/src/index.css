@@ -4,6 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Set global font to Arial */
+body, button, input, select, textarea {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
