@@ -268,7 +268,112 @@ export function useChatSession() {
       nextStage = 'IN_DEPTH';
       nextSubStage = 'IN_DEPTH_EXPLORATION';
     } else if (subStage === 'IN_DEPTH_EXPLORATION') {
-      replyText = "Bạn có thể đặt câu hỏi tự do cho AI về các phân tích trên. Khi đã sẵn sàng, hãy bấm nút 'Chuyển sang Giai đoạn 3' nhé!";
+      const list = shortlistedCareers.length > 0 ? shortlistedCareers : ['Kỹ sư Phần mềm', 'Digital Marketer', 'UX/UI Designer'];
+      const capLower = (profileInfo?.skills || profileInfo?.capabilities || '').toLowerCase();
+      
+      const matchSkill = (cap, keywords, partialKeywords = []) => {
+        for (const kw of keywords) {
+          if (cap.includes(kw.toLowerCase())) return 10;
+        }
+        for (const kw of partialKeywords) {
+          if (cap.includes(kw.toLowerCase())) return 5;
+        }
+        return 0;
+      };
+
+      const getCareerDetail = (c) => {
+        const cLower = c.toLowerCase();
+        if (cLower.includes('phần mềm') || cLower.includes('software')) {
+          return {
+            description: "Lập trình, thiết kế và bảo trì các hệ thống phần mềm từ ứng dụng web, mobile đến hệ thống backend.",
+            typicalDay: "Sáng: standup meeting (15 phút), code feature mới. Chiều: review code, họp kỹ thuật.",
+            coreAspects: "Ngồi làm việc với máy tính 8-10h/ngày, áp lực tiến độ (deadline) và OT cao.",
+            salary: "15 - 35 triệu VNĐ/tháng (khởi điểm), Tech Lead có thể lên tới 50+ triệu VNĐ/tháng.",
+            prospects: "Lộ trình: Junior → Senior → Tech Lead/Architect → CTO hoặc Product Manager.",
+            skillGapLine: `SKILLGAP::Python:${matchSkill(capLower, ['python'])}|JavaScript:${matchSkill(capLower, ['javascript', 'js'], ['html', 'web'])}|SQL:${matchSkill(capLower, ['sql', 'mysql'], ['database'])}|React/Node.js:${matchSkill(capLower, ['react', 'node'])}|DevOps:${matchSkill(capLower, ['devops', 'docker'])}`,
+            skillGap: "Cần tích lũy thêm các dự án thực tế trên GitHub và làm quen với React, Node.js.",
+            jobOpportunities: "Nhu cầu rất cao tại TP.HCM và Hà Nội, hơn 15.000 việc làm mới mỗi tháng.",
+            feasibility: "Khá cao. Khớp với năng lực kỹ thuật và hỗ trợ làm việc remote linh hoạt."
+          };
+        }
+        if (cLower.includes('marketing') || cLower.includes('marketer')) {
+          return {
+            description: "Lập kế hoạch và triển khai các chiến dịch marketing trên nền tảng số (Facebook, Google, TikTok, Email...).",
+            typicalDay: "Sáng: kiểm tra chỉ số quảng cáo (CTR, CPC). Chiều: họp lên ý tưởng nội dung, viết báo cáo tuần.",
+            coreAspects: "Chịu áp lực KPI doanh số/traffic khắt khe, thị trường biến động nhanh.",
+            salary: "12 - 25 triệu VNĐ/tháng, tăng theo năng lực quảng lý ngân sách.",
+            prospects: "Lộ trình: Executive → Senior → Marketing Manager → CMO hoặc Agency Owner.",
+            skillGapLine: `SKILLGAP::Facebook Ads:${matchSkill(capLower, ['facebook', 'fb'])}|Google Ads:${matchSkill(capLower, ['google ads', 'adwords'])}|SEO/SEM:${matchSkill(capLower, ['seo', 'sem'])}|Content Writing:${matchSkill(capLower, ['content', 'copywriting'])}|Google Analytics:${matchSkill(capLower, ['analytics', 'ga4'])}`,
+            skillGap: "Cần cải thiện tư duy tối ưu chi phí quảng cáo (A/B testing) và kỹ năng phân tích số liệu.",
+            jobOpportunities: "Nhu cầu tuyển dụng ổn định, khoảng 8.000 tin tuyển dụng mới mỗi tháng.",
+            feasibility: "Tốt. Phù hợp với sở thích sáng tạo và khả năng giao tiếp của bạn."
+          };
+        }
+        if (cLower.includes('thiết kế') || cLower.includes('designer') || cLower.includes('ux/ui')) {
+          return {
+            description: "Nghiên cứu hành vi người dùng, thiết kế giao diện (UI) và trải nghiệm sử dụng (UX) cho các sản phẩm số.",
+            typicalDay: "Sáng: phỏng vấn người dùng, vẽ wireframe. Chiều: thiết kế UI trên Figma, họp với Dev.",
+            coreAspects: "Cân bằng giữa thẩm mỹ cá nhân và trải nghiệm của người dùng thực tế.",
+            salary: "14 - 28 triệu VNĐ/tháng.",
+            prospects: "Lộ trình: Junior Designer → Senior UX/UI → Lead Designer → UX Director/Product Designer.",
+            skillGapLine: `SKILLGAP::Figma:${matchSkill(capLower, ['figma'])}|Adobe XD:${matchSkill(capLower, ['xd'])}|User Research:${matchSkill(capLower, ['research', 'nghiên cứu user'])}|Wireframing:${matchSkill(capLower, ['wireframe', 'prototype'])}|Design System:${matchSkill(capLower, ['design system'])}`,
+            skillGap: "Cần xây dựng Portfolio dự án thực tế và bổ sung kiến thức cơ bản về HTML/CSS.",
+            jobOpportunities: "Nhu cầu tăng nhanh, khoảng 5.000 việc làm mới mỗi tháng tại các công ty công nghệ.",
+            feasibility: "Cao. Phát huy tốt sự sáng tạo và năng lực thiết kế của bạn."
+          };
+        }
+        // Fallback default
+        return {
+          description: "Thực hiện chuyên môn theo kế hoạch, phối hợp với các bộ phận liên quan và đóng góp vào mục tiêu chung.",
+          typicalDay: "Xử lý công việc hàng ngày, họp nhóm báo cáo tiến độ và thảo luận phương án giải quyết.",
+          coreAspects: "Yêu cầu tính kiên trì học hỏi công cụ chuyên ngành và phối hợp làm việc nhóm tốt.",
+          salary: "12 - 22 triệu VNĐ/tháng.",
+          prospects: "Phát triển từ vị trí nhân viên lên chuyên viên, senior và quản lý sau 4-6 năm.",
+          skillGapLine: `SKILLGAP::Chuyên môn:5|Giao tiếp:5|Ngoại ngữ:5|Tin học:5|Tự học:5`,
+          skillGap: "Cần bồi dưỡng portfolio dự án cá nhân thực tế để chứng minh năng lực.",
+          jobOpportunities: "Nhu cầu tuyển dụng ổn định theo sự phát triển kinh tế tại Việt Nam.",
+          feasibility: "Khá khả thi. Khớp với mục tiêu phát triển của bạn."
+        };
+      };
+
+      const intro = `## 🔍 Giai đoạn 2: Khám phá chuyên sâu (In-depth Exploration)
+
+Chào bạn, tại giai đoạn này chúng ta sẽ **"phóng to" (Zoom-in)** vào từng nghề nghiệp thuộc danh sách rút gọn để kiểm chứng thông qua **2 tiêu chuẩn bắt buộc**: **Tính phù hợp (Fit)** và **Tính khả thi (Feasibility & Skill Gap)**.`;
+
+      const careerBlocks = list.map((c, i) => {
+        const d = getCareerDetail(c);
+        return `### 💼 Nghề nghiệp thứ ${i+1}: **${c}**
+
+#### 📋 1. Mô tả công việc:
+${d.description}
+
+#### 🌅 2. Một ngày làm việc điển hình:
+${d.typicalDay}
+
+#### 💰 3. Mức lương tham khảo:
+${d.salary}
+
+#### 🚀 4. Triển vọng nghề nghiệp:
+${d.prospects}
+
+#### 🛠️ 5. Kỹ năng cần có:
+${d.skillGapLine}
+* **Ghi chú:** Năng lực hiện tại của bạn: *"${profileInfo?.skills || profileInfo?.capabilities || 'Chưa rõ'}"*.
+* **Khoảng cách kỹ năng cần bù đắp:** ${d.skillGap}
+
+#### 🏢 6. Cơ hội việc làm tại Việt Nam:
+${d.jobOpportunities}
+
+#### 📌 7. Khía cạnh cốt lõi của nghề (Core aspects):
+* **Đặc thù bắt buộc:** ${d.coreAspects}
+* **Đánh giá rào cản:** Nghề này được đánh giá là ít bị ảnh hưởng bởi rào cản vật lý.
+
+⚖️ **Phán quyết sơ bộ:** **${d.feasibility}**`;
+      }).join('\n\n---\n\n');
+
+      const outro = `Bạn có thể đặt thêm câu hỏi tự do cho AI về các phân tích trên. Khi đã sẵn sàng, hãy bấm nút **"Chuyển sang Giai đoạn 3"** ở bảng điều khiển bên dưới để lập Ma trận quyết định nhé!`;
+
+      replyText = `${intro}\n\n---\n\n${careerBlocks}\n\n---\n\n${outro}`;
       nextStage = 'IN_DEPTH';
       nextSubStage = 'IN_DEPTH_CHAT';
     } else if (subStage === 'IN_DEPTH_CHAT') {
