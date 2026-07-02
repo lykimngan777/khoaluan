@@ -42,7 +42,8 @@ function saveUsers(users) {
 function findUserByEmail(email) {
   if (!email) return null;
   const users = getAllUsers();
-  return users.find(u => u.email.toLowerCase() === email.toLowerCase());
+  const targetEmail = email.trim().toLowerCase();
+  return users.find(u => u.email.toLowerCase() === targetEmail);
 }
 
 /**
@@ -63,7 +64,7 @@ function createUser(userData) {
   const newUser = {
     id: Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
     name: userData.name,
-    email: userData.email.toLowerCase(),
+    email: userData.email.trim().toLowerCase(),
     password: userData.password,
     createdAt: new Date().toISOString()
   };
