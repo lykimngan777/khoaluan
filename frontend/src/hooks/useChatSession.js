@@ -226,7 +226,7 @@ export function useChatSession() {
       const timer = setTimeout(syncState, 500);
       return () => clearTimeout(timer);
     }
-  }, [stage, subStage, furthestSubStage, history, selectedCriteria, shortlistedCareers, userProposedCareers, selectedCareer, expertConsulted, finalRoadmap, sessionId, user]);
+  }, [stage, subStage, furthestSubStage, history, selectedCriteria, shortlistedCareers, userProposedCareers, selectedCareer, profileInfo, expertConsulted, finalRoadmap, sessionId, user]);
 
   // Sync state to the server on tab close or page navigation using keepalive: true / sendBeacon
   useEffect(() => {
@@ -603,7 +603,9 @@ ${d.jobOpportunities}
     try {
       const res = await fetch(`${API_BASE}/history/${userId}`);
       if (res.ok) {
-        return await res.json();
+        const data = await res.json();
+        // Filter out empty sessions (where only the initial AI greeting exists)
+        return data.filter(session => session.history && session.history.length > 1);
       }
       return [];
     } catch (err) {

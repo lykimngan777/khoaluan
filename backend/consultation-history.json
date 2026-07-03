@@ -61,7 +61,7 @@
     "userId": "expert_001",
     "userName": "Chuyên gia Hướng nghiệp",
     "stage": "PRESCREENING",
-    "subStage": "PROFILE_GATHERING",
+    "subStage": "TEST",
     "history": [
       {
         "sender": "ai",
@@ -75,7 +75,7 @@
     "selectedCareer": null,
     "profileInfo": {},
     "finalRoadmap": null,
-    "updatedAt": "2026-07-03T10:35:18.013Z"
+    "updatedAt": "2026-07-03T10:45:57.909Z"
   },
   {
     "id": "sess_rbhg1j7o9",
@@ -87,7 +87,7 @@
       {
         "sender": "ai",
         "text": "Chào bạn! Mình là CareerAI, trợ lý hướng nghiệp cá nhân của bạn. Rất vui được đồng hành cùng bạn trên hành trình định hình tương lai theo mô hình PIC (Sàng lọc - Khám phá - Lựa chọn).\n\nĐể bắt đầu, **vui lòng nhập thông tin hồ sơ học tập và kinh nghiệm của bạn** ở bảng điều khiển bên dưới để mình có cơ sở phân tích và tư vấn chính xác nhất nhé!",
-        "timestamp": "2026-07-03T09:22:45.102Z",
+        "timestamp": "2026-07-03T10:39:18.276Z",
         "stage": "PRESCREENING"
       }
     ],
@@ -96,7 +96,7 @@
     "selectedCareer": null,
     "profileInfo": {},
     "finalRoadmap": null,
-    "updatedAt": "2026-07-03T09:22:45.836Z"
+    "updatedAt": "2026-07-03T10:46:34.675Z"
   },
   {
     "id": "sess_ocy05kak3",
