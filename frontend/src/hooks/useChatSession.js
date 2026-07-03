@@ -80,7 +80,20 @@ export function useChatSession() {
   // Fetch session data from backend (or fallback to localStorage if offline)
   const loadSessionData = async (id) => {
     try {
-      const res = await fetch(`${API_BASE}/session/${id}`);
+      // Try to load user from local storage fallback if context state is still loading
+      const storedUserRaw = localStorage.getItem('careerai_user');
+      let currentUserId = user?.id;
+      let currentUserName = user?.name;
+      if (!currentUserId && storedUserRaw) {
+        try {
+          const parsedUser = JSON.parse(storedUserRaw);
+          currentUserId = parsedUser.id;
+          currentUserName = parsedUser.name;
+        } catch (e) {}
+      }
+
+      const queryParams = currentUserId ? `?userId=${currentUserId}&userName=${encodeURIComponent(currentUserName)}` : '';
+      const res = await fetch(`${API_BASE}/session/${id}${queryParams}`);
       if (res.ok) {
         const data = await res.json();
         
@@ -215,13 +228,13 @@ export function useChatSession() {
     }
   }, [stage, subStage, furthestSubStage, history, selectedCriteria, shortlistedCareers, userProposedCareers, selectedCareer, expertConsulted, finalRoadmap, sessionId, user]);
 
-  // Sync state to the server on tab close or page navigation using keepalive: true
+  // Sync state to the server on tab close or page navigation using keepalive: true / sendBeacon
   useEffect(() => {
     const handleUnload = () => {
       const state = stateRef.current;
       if (state && state.sessionId && state.user) {
-        const url = `${API_BASE}/session/${state.sessionId}`;
-        const data = JSON.stringify({
+        const url = `${API_BASE}/session/${state.sessionId}/sync`;
+        const payload = JSON.stringify({
           userId: state.user.id,
           userName: state.user.name,
           stage: state.stage,
@@ -237,12 +250,19 @@ export function useChatSession() {
           finalRoadmap: state.finalRoadmap
         });
         
-        fetch(url, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: data,
-          keepalive: true
-        });
+        // Use text/plain Blob to completely bypass CORS Preflight (OPTIONS) request during unload
+        const blob = new Blob([payload], { type: 'text/plain' });
+        
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon(url, blob);
+        } else {
+          fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: payload,
+            keepalive: true
+          });
+        }
       }
     };
 

@@ -20,10 +20,19 @@ exports.initSession = (req, res) => {
  */
 exports.getSessionData = (req, res) => {
   const { id } = req.params;
+  const { userId, userName } = req.query;
   const session = sessionStore.getSession(id);
   if (!session) {
     return res.status(404).json({ error: "Không tìm thấy phiên làm việc" });
   }
+
+  // Auto associate user if passed in query parameters (robust sync on page load/reconnect)
+  if (userId) {
+    session.userId = userId;
+    if (userName) session.userName = userName;
+    historyStore.saveToHistory(session);
+  }
+
   res.json(session);
 };
 
@@ -234,5 +243,33 @@ exports.deleteSession = (req, res) => {
   } catch (error) {
     console.error("Error in deleteSession:", error);
     res.status(500).json({ error: "Không thể xóa phiên tư vấn này" });
+  }
+};
+
+/**
+ * Sync session data from unload event beacon (CORS preflight bypass)
+ */
+exports.syncSessionData = (req, res) => {
+  const { id } = req.params;
+  let updates = req.body;
+
+  if (typeof updates === 'string') {
+    try {
+      updates = JSON.parse(updates);
+    } catch (err) {
+      return res.status(400).json({ error: "Dữ liệu JSON không hợp lệ" });
+    }
+  }
+
+  try {
+    const updatedSession = sessionStore.updateSession(id, updates);
+    if (!updatedSession) {
+      return res.status(404).json({ error: "Không tìm thấy phiên để đồng bộ" });
+    }
+    historyStore.saveToHistory(updatedSession);
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error in syncSessionData:", error);
+    res.status(500).json({ error: "Lỗi đồng bộ dữ liệu" });
   }
 };

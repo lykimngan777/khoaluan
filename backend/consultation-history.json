@@ -66,7 +66,7 @@
       {
         "sender": "ai",
         "text": "Chào bạn! Mình là CareerAI, trợ lý hướng nghiệp cá nhân của bạn. Rất vui được đồng hành cùng bạn trên hành trình định hình tương lai theo mô hình PIC (Sàng lọc - Khám phá - Lựa chọn).\n\nĐể bắt đầu, **vui lòng nhập thông tin hồ sơ học tập và kinh nghiệm của bạn** ở bảng điều khiển bên dưới để mình có cơ sở phân tích và tư vấn chính xác nhất nhé!",
-        "timestamp": "2026-07-03T09:56:29.049Z",
+        "timestamp": "2026-07-03T10:35:17.060Z",
         "stage": "PRESCREENING"
       }
     ],
@@ -75,7 +75,7 @@
     "selectedCareer": null,
     "profileInfo": {},
     "finalRoadmap": null,
-    "updatedAt": "2026-07-03T09:56:29.156Z"
+    "updatedAt": "2026-07-03T10:35:18.013Z"
   },
   {
     "id": "sess_rbhg1j7o9",

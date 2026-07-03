@@ -17,6 +17,9 @@ router.post('/expert-message', chatController.sendExpertMessage);
 // Update session manually (e.g. state transitions, chosen criteria, etc.)
 router.put('/session/:id', chatController.updateSessionData);
 
+// Sync session data (supports simple POST requests to bypass CORS preflight during unload)
+router.post('/session/:id/sync', chatController.syncSessionData);
+
 // Associate session with user
 router.post('/session/:id/associate', chatController.associateSession);
 
