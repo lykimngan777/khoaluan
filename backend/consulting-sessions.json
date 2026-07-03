@@ -1,1 +1,34 @@
-[]
+[
+  {
+    "id": "cs_1783069678027",
+    "userId": "mr31z6usir24k",
+    "userName": "a",
+    "careerName": "Chuyên viên Product Manager",
+    "status": "pending",
+    "createdAt": "2026-07-03T09:07:58.028Z",
+    "acceptedAt": null,
+    "messages": [
+      {
+        "id": "msg_init",
+        "sender": "user",
+        "senderName": "a",
+        "text": "Tư vấn với chuyên gia",
+        "time": "2026-07-03T09:07:58.028Z"
+      },
+      {
+        "id": "msg_pending_notice",
+        "sender": "expert",
+        "senderName": "Hệ thống",
+        "text": "Hệ thống đã gửi yêu cầu của bạn đến chuyên gia. Vui lòng chờ chuyên gia chấp nhận kết nối trong giây lát...",
+        "time": "2026-07-03T09:07:58.028Z"
+      },
+      {
+        "id": "msg_1783069683301",
+        "sender": "user",
+        "senderName": "a",
+        "text": "hê lô",
+        "time": "2026-07-03T09:08:03.301Z"
+      }
+    ]
+  }
+]

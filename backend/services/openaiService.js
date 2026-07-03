@@ -39,10 +39,15 @@ Profile info: ${JSON.stringify(session.profileInfo || {})}
 Expert consultation requested: ${session.expertConsulted ? 'Yes' : 'No'}
 `;
 
-      const geminiHistory = history.map(msg => ({
+      let geminiHistory = history.map(msg => ({
         role: msg.sender === 'user' ? 'user' : 'model',
         parts: [{ text: msg.text }]
       }));
+
+      // Gemini requires the first message in chat history to be from the 'user'
+      if (geminiHistory.length > 0 && geminiHistory[0].role === 'model') {
+        geminiHistory = geminiHistory.slice(1);
+      }
 
       const chat = model.startChat({
         history: geminiHistory,

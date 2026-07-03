@@ -106,11 +106,11 @@ export default function Home({ setActiveTab, chatState }) {
                       {formatDate(item.updatedAt)}
                     </span>
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      item.stage === 'COMPLETED'
+                      (item.stage === 'COMPLETED' || item.selectedCareer)
                         ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20'
                         : 'bg-amber-50 text-amber-600 dark:bg-amber-950/20'
                     }`}>
-                      {item.stage === 'COMPLETED' ? 'Đã hoàn tất' : 'Đang thực hiện'}
+                      {(item.stage === 'COMPLETED' || item.selectedCareer) ? 'Đã hoàn tất' : 'Đang thực hiện'}
                     </span>
                   </div>
 
@@ -155,7 +155,7 @@ export default function Home({ setActiveTab, chatState }) {
                       onClick={() => {
                         setSelectedSession(item);
                         setShowHistoryModal(true);
-                        setActiveSubTab('chat');
+                        setActiveSubTab(item.selectedCareer ? 'roadmap' : 'chat');
                       }}
                       className="px-3.5 py-1.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold rounded-lg text-xs border border-slate-200 dark:border-slate-700 transition-colors"
                     >
@@ -164,7 +164,7 @@ export default function Home({ setActiveTab, chatState }) {
                     <button
                       onClick={() => {
                         chatState.loadHistoricalSession(item);
-                        setActiveTab('assistant');
+                        setActiveTab(item.selectedCareer ? 'roadmap' : 'assistant');
                       }}
                       className="px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg text-xs transition-colors flex items-center gap-0.5"
                     >
@@ -319,7 +319,7 @@ export default function Home({ setActiveTab, chatState }) {
                   chatState.loadHistoricalSession(selectedSession);
                   setShowHistoryModal(false);
                   setSelectedSession(null);
-                  setActiveTab('assistant');
+                  setActiveTab(selectedSession.selectedCareer ? 'roadmap' : 'assistant');
                 }}
                 className="px-5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl text-xs shadow-md transition-colors"
               >

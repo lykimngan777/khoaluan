@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 
 const API_BASE = import.meta.env.VITE_API_URL 
@@ -160,6 +160,95 @@ export function useChatSession() {
       localStorage.setItem('careerai_state', JSON.stringify(stateToSave));
     }
   }, [stage, subStage, furthestSubStage, history, selectedCriteria, shortlistedCareers, userProposedCareers, selectedCareer, profileInfo, expertConsulted, finalRoadmap, sessionId]);
+
+  // Reference to hold the latest state for window unload syncing
+  const stateRef = useRef();
+  useEffect(() => {
+    stateRef.current = {
+      stage,
+      subStage,
+      furthestSubStage,
+      history,
+      selectedCriteria,
+      shortlistedCareers,
+      userProposedCareers,
+      selectedCareer,
+      profileInfo,
+      expertConsulted,
+      finalRoadmap,
+      sessionId,
+      user
+    };
+  }, [stage, subStage, furthestSubStage, history, selectedCriteria, shortlistedCareers, userProposedCareers, selectedCareer, profileInfo, expertConsulted, finalRoadmap, sessionId, user]);
+
+  // Sync state to the server when discrete state changes
+  useEffect(() => {
+    if (sessionId && user) {
+      const syncState = async () => {
+        try {
+          await fetch(`${API_BASE}/session/${sessionId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              stage,
+              subStage,
+              furthestSubStage,
+              history,
+              selectedCriteria,
+              shortlistedCareers,
+              userProposedCareers,
+              selectedCareer,
+              profileInfo,
+              expertConsulted,
+              finalRoadmap
+            })
+          });
+        } catch (err) {
+          console.warn("Failed to sync session to server:", err);
+        }
+      };
+
+      const timer = setTimeout(syncState, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [stage, subStage, furthestSubStage, history, selectedCriteria, shortlistedCareers, userProposedCareers, selectedCareer, expertConsulted, finalRoadmap, sessionId, user]);
+
+  // Sync state to the server on tab close or page navigation using keepalive: true
+  useEffect(() => {
+    const handleUnload = () => {
+      const state = stateRef.current;
+      if (state && state.sessionId && state.user) {
+        const url = `${API_BASE}/session/${state.sessionId}`;
+        const data = JSON.stringify({
+          stage: state.stage,
+          subStage: state.subStage,
+          furthestSubStage: state.furthestSubStage,
+          history: state.history,
+          selectedCriteria: state.selectedCriteria,
+          shortlistedCareers: state.shortlistedCareers,
+          userProposedCareers: state.userProposedCareers,
+          selectedCareer: state.selectedCareer,
+          profileInfo: state.profileInfo,
+          expertConsulted: state.expertConsulted,
+          finalRoadmap: state.finalRoadmap
+        });
+        
+        fetch(url, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: data,
+          keepalive: true
+        });
+      }
+    };
+
+    window.addEventListener('pagehide', handleUnload);
+    window.addEventListener('beforeunload', handleUnload);
+    return () => {
+      window.removeEventListener('pagehide', handleUnload);
+      window.removeEventListener('beforeunload', handleUnload);
+    };
+  }, []);
 
   // Send a message
   const sendMessage = async (messageText) => {

@@ -4,12 +4,48 @@
     "userId": "mr31z6usir24k",
     "userName": "a",
     "stage": "PRESCREENING",
-    "subStage": "PROFILE_GATHERING",
+    "subStage": "SUGGEST_MORE_QUESTION",
     "history": [
       {
         "sender": "ai",
         "text": "Chào bạn! Mình là CareerAI, trợ lý hướng nghiệp cá nhân của bạn. Rất vui được đồng hành cùng bạn trên hành trình định hình tương lai theo mô hình PIC (Sàng lọc - Khám phá - Lựa chọn).\n\nĐể bắt đầu, **vui lòng nhập thông tin hồ sơ học tập và kinh nghiệm của bạn** ở bảng điều khiển bên dưới để mình có cơ sở phân tích và tư vấn chính xác nhất nhé!",
         "timestamp": "2026-07-02T09:51:20.322Z",
+        "stage": "PRESCREENING"
+      },
+      {
+        "sender": "user",
+        "text": "Sở thích cá nhân cốt lõi: Công nghệ. Ngành học/Trình độ: CNTT năm 3. Năng lực cá nhân: Kỹ năng kỹ thuật lập trình Python. Học lực/Kinh nghiệm: Học lực Giỏi (GPA 3.4). Rào cản/Hạn chế: Không. Mục tiêu: Lương 20tr+.",
+        "timestamp": "2026-07-03T10:07:30.616Z",
+        "stage": "PRESCREENING"
+      },
+      {
+        "sender": "ai",
+        "text": "Cảm ơn bạn đã cung cấp hồ sơ cá nhân chi tiết! Mình đã ghi nhận các thông tin về sở thích, ngành học, kỹ năng, học lực/kinh nghiệm và mục tiêu của bạn.\n\nBây giờ, **bạn đã có sẵn danh sách các ngành nghề mà mình đang quan tâm hay chưa?**\n*(Hãy bấm nút lựa chọn bên dưới để chúng ta bắt đầu nhé!)*",
+        "timestamp": "2026-07-03T10:07:30.828Z",
+        "stage": "PRESCREENING"
+      },
+      {
+        "sender": "user",
+        "text": "Đã có danh sách nghề quan tâm rồi",
+        "timestamp": "2026-07-03T10:07:32.332Z",
+        "stage": "PRESCREENING"
+      },
+      {
+        "sender": "ai",
+        "text": "Tuyệt vời! Việc bạn đã xác định được một vài hướng đi là điểm khởi đầu rất tốt. **Hãy liệt kê từ 3 đến 5 ngành nghề** bạn đang quan tâm nhất hiện tại (phân cách bằng dấu phẩy nhé).\n\n*Ví dụ: Kỹ sư Phần mềm, Phân tích dữ liệu, Thiết kế Đồ họa.*\n\n*(Lưu ý: Bạn cần liệt kê từ 3 đến 5 nghề để sàng lọc PIC hiệu quả nhất. Hệ thống hỗ trợ tối đa 5 nghề tự chọn).*",
+        "timestamp": "2026-07-03T10:07:32.434Z",
+        "stage": "PRESCREENING"
+      },
+      {
+        "sender": "user",
+        "text": "Product Manager, Data Analyst, UX/UI Designer",
+        "timestamp": "2026-07-03T10:07:35.240Z",
+        "stage": "PRESCREENING"
+      },
+      {
+        "sender": "ai",
+        "text": "Cảm ơn bạn. Mình đã lưu lại danh sách **3 nghề** bạn tự đề xuất:\n1. Product Manager\n2. Data Analyst\n3. UX/UI Designer\n\n**Bạn có muốn hệ thống gợi ý thêm một số ngành nghề phù hợp khác** dựa trên sở thích và năng lực của bạn để tăng thêm lựa chọn không?",
+        "timestamp": "2026-07-03T10:07:35.335Z",
         "stage": "PRESCREENING"
       }
     ],
@@ -18,7 +54,7 @@
     "selectedCareer": null,
     "profileInfo": {},
     "finalRoadmap": null,
-    "updatedAt": "2026-07-02T14:16:24.969Z"
+    "updatedAt": "2026-07-03T10:07:40.941Z"
   },
   {
     "id": "sess_9u9qc0je3",
@@ -30,7 +66,7 @@
       {
         "sender": "ai",
         "text": "Chào bạn! Mình là CareerAI, trợ lý hướng nghiệp cá nhân của bạn. Rất vui được đồng hành cùng bạn trên hành trình định hình tương lai theo mô hình PIC (Sàng lọc - Khám phá - Lựa chọn).\n\nĐể bắt đầu, **vui lòng nhập thông tin hồ sơ học tập và kinh nghiệm của bạn** ở bảng điều khiển bên dưới để mình có cơ sở phân tích và tư vấn chính xác nhất nhé!",
-        "timestamp": "2026-07-02T09:40:39.039Z",
+        "timestamp": "2026-07-03T09:56:29.049Z",
         "stage": "PRESCREENING"
       }
     ],
@@ -39,6 +75,48 @@
     "selectedCareer": null,
     "profileInfo": {},
     "finalRoadmap": null,
-    "updatedAt": "2026-07-02T09:46:22.978Z"
+    "updatedAt": "2026-07-03T09:56:29.156Z"
+  },
+  {
+    "id": "sess_rbhg1j7o9",
+    "userId": "mr0auy6twzitw",
+    "userName": "ngân",
+    "stage": "PRESCREENING",
+    "subStage": "PROFILE_GATHERING",
+    "history": [
+      {
+        "sender": "ai",
+        "text": "Chào bạn! Mình là CareerAI, trợ lý hướng nghiệp cá nhân của bạn. Rất vui được đồng hành cùng bạn trên hành trình định hình tương lai theo mô hình PIC (Sàng lọc - Khám phá - Lựa chọn).\n\nĐể bắt đầu, **vui lòng nhập thông tin hồ sơ học tập và kinh nghiệm của bạn** ở bảng điều khiển bên dưới để mình có cơ sở phân tích và tư vấn chính xác nhất nhé!",
+        "timestamp": "2026-07-03T09:22:45.102Z",
+        "stage": "PRESCREENING"
+      }
+    ],
+    "selectedCriteria": [],
+    "shortlistedCareers": [],
+    "selectedCareer": null,
+    "profileInfo": {},
+    "finalRoadmap": null,
+    "updatedAt": "2026-07-03T09:22:45.836Z"
+  },
+  {
+    "id": "sess_ocy05kak3",
+    "userId": "mr31z6usir24k",
+    "userName": "a",
+    "stage": "PRESCREENING",
+    "subStage": "PROFILE_GATHERING",
+    "history": [
+      {
+        "sender": "ai",
+        "text": "Chào bạn! Mình là CareerAI, trợ lý hướng nghiệp cá nhân của bạn. Rất vui được đồng hành cùng bạn trên hành trình định hình tương lai theo mô hình PIC (Sàng lọc - Khám phá - Lựa chọn).\n\nĐể bắt đầu, **vui lòng nhập thông tin hồ sơ học tập và kinh nghiệm của bạn** ở bảng điều khiển bên dưới để mình có cơ sở phân tích và tư vấn chính xác nhất nhé!",
+        "timestamp": "2026-07-03T09:58:15.520Z",
+        "stage": "PRESCREENING"
+      }
+    ],
+    "selectedCriteria": [],
+    "shortlistedCareers": [],
+    "selectedCareer": null,
+    "profileInfo": {},
+    "finalRoadmap": null,
+    "updatedAt": "2026-07-03T09:58:16.282Z"
   }
 ]

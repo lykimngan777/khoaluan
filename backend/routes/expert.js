@@ -17,6 +17,7 @@ function writeSessions(sessions) {
 
 // GET /api/expert/sessions — lấy toàn bộ sessions (expert dùng)
 router.get('/sessions', (req, res) => {
+  console.log(`[EXPERT ROUTE] GET /sessions - Fetching all sessions`);
   const sessions = readSessions();
   res.json(sessions);
 });
@@ -24,7 +25,10 @@ router.get('/sessions', (req, res) => {
 // POST /api/expert/sessions — user tạo yêu cầu tư vấn mới
 router.post('/sessions', (req, res) => {
   const { userId, userName, careerName } = req.body;
+  console.log(`[EXPERT ROUTE] POST /sessions - Create new session requested by user: ${userName} (ID: ${userId}) for career: ${careerName}`);
+  
   if (!userId || !userName) {
+    console.warn(`[EXPERT ROUTE] POST /sessions - Missing userId or userName!`);
     return res.status(400).json({ error: 'Thiếu thông tin userId hoặc userName' });
   }
 
@@ -35,6 +39,7 @@ router.post('/sessions', (req, res) => {
     s => s.userId === userId && (s.status === 'pending' || s.status === 'active')
   );
   if (existing) {
+    console.log(`[EXPERT ROUTE] POST /sessions - Found existing active/pending session: ${existing.id}`);
     return res.json(existing);
   }
 
@@ -66,19 +71,25 @@ router.post('/sessions', (req, res) => {
 
   sessions.push(newSession);
   writeSessions(sessions);
+  console.log(`[EXPERT ROUTE] POST /sessions - Created new session successfully: ${newSession.id}`);
   res.json(newSession);
 });
 
 // GET /api/expert/sessions/:id — lấy 1 session (polling messages)
 router.get('/sessions/:id', (req, res) => {
+  console.log(`[EXPERT ROUTE] GET /sessions/${req.params.id} - Polling session`);
   const sessions = readSessions();
   const session = sessions.find(s => s.id === req.params.id);
-  if (!session) return res.status(404).json({ error: 'Không tìm thấy phiên tư vấn' });
+  if (!session) {
+    console.warn(`[EXPERT ROUTE] GET /sessions/${req.params.id} - Session not found!`);
+    return res.status(404).json({ error: 'Không tìm thấy phiên tư vấn' });
+  }
   res.json(session);
 });
 
 // PUT /api/expert/sessions/:id/accept — chuyên gia chấp nhận tư vấn
 router.put('/sessions/:id/accept', (req, res) => {
+  console.log(`[EXPERT ROUTE] PUT /sessions/${req.params.id}/accept - Accept requested`);
   const sessions = readSessions();
   const idx = sessions.findIndex(s => s.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Không tìm thấy phiên tư vấn' });
@@ -102,6 +113,7 @@ router.put('/sessions/:id/accept', (req, res) => {
 
 // PUT /api/expert/sessions/:id/close — đóng phiên tư vấn
 router.put('/sessions/:id/close', (req, res) => {
+  console.log(`[EXPERT ROUTE] PUT /sessions/${req.params.id}/close - Close requested`);
   const sessions = readSessions();
   const idx = sessions.findIndex(s => s.id === req.params.id);
   if (idx === -1) return res.status(404).json({ error: 'Không tìm thấy phiên tư vấn' });
@@ -115,6 +127,8 @@ router.put('/sessions/:id/close', (req, res) => {
 // POST /api/expert/sessions/:id/message — gửi tin nhắn (user hoặc expert)
 router.post('/sessions/:id/message', (req, res) => {
   const { sender, senderName, text } = req.body;
+  console.log(`[EXPERT ROUTE] POST /sessions/${req.params.id}/message - New message from ${senderName} (${sender}): "${text}"`);
+  
   if (!sender || !text) return res.status(400).json({ error: 'Thiếu sender hoặc text' });
 
   const sessions = readSessions();
