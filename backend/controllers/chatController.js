@@ -34,6 +34,8 @@ exports.sendMessage = async (req, res) => {
   const { 
     sessionId, 
     message, 
+    userId,
+    userName,
     stage, 
     subStage,
     furthestSubStage,
@@ -53,6 +55,10 @@ exports.sendMessage = async (req, res) => {
   try {
     // 1. Get or initialize session
     const session = sessionStore.getSession(sessionId);
+    
+    // Associate user if passed
+    if (userId) session.userId = userId;
+    if (userName) session.userName = userName;
     
     // 2. Sync metadata from frontend if provided
     if (stage) session.stage = stage;

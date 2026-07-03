@@ -68,14 +68,31 @@ export default function App() {
     }
   };
 
-  // Intercept tab changes to enforce auth
-  const handleTabChange = (tab) => {
+  // Intercept tab changes to enforce auth and ask for session continuation
+  const handleTabChange = async (tab, skipPrompt = false) => {
     if ((tab === 'assistant' || tab === 'roadmap') && !user) {
       if (window.confirm('Bạn cần đăng nhập để sử dụng tính năng này. Chuyển đến trang Đăng nhập?')) {
         setActiveTab('login');
       }
       return;
     }
+
+    if (tab === 'assistant' && user && !skipPrompt) {
+      try {
+        const historyData = await chatState.fetchUserHistory(user.id);
+        if (historyData && historyData.length > 0) {
+          const choice = window.confirm("Bạn đã có lịch sử tư vấn trước đó. Bạn có muốn TIẾP TỤC phiên tư vấn gần nhất không?\n(Chọn OK để tiếp tục phiên cũ, chọn Cancel để bắt đầu phiên mới)");
+          if (choice) {
+            chatState.loadHistoricalSession(historyData[0]);
+          } else {
+            chatState.startNewSession();
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to check history for tab change:", err);
+      }
+    }
+
     setActiveTab(tab);
   };
 
@@ -389,7 +406,7 @@ export default function App() {
                                 onClick={() => {
                                   chatState.loadHistoricalSession(item);
                                   setShowHistoryModal(false);
-                                  handleTabChange(item.selectedCareer ? 'roadmap' : 'assistant');
+                                  handleTabChange(item.selectedCareer ? 'roadmap' : 'assistant', true);
                                 }}
                                 className="px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg text-xs transition-colors flex items-center gap-0.5"
                               >
@@ -448,7 +465,7 @@ export default function App() {
                     chatState.loadHistoricalSession(selectedSession);
                     setShowHistoryModal(false);
                     setSelectedSession(null);
-                    handleTabChange(selectedSession.selectedCareer ? 'roadmap' : 'assistant');
+                    handleTabChange(selectedSession.selectedCareer ? 'roadmap' : 'assistant', true);
                   }}
                   className="px-5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl text-xs shadow-md transition-colors"
                 >

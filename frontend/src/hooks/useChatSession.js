@@ -190,6 +190,8 @@ export function useChatSession() {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+              userId: user.id,
+              userName: user.name,
               stage,
               subStage,
               furthestSubStage,
@@ -220,6 +222,8 @@ export function useChatSession() {
       if (state && state.sessionId && state.user) {
         const url = `${API_BASE}/session/${state.sessionId}`;
         const data = JSON.stringify({
+          userId: state.user.id,
+          userName: state.user.name,
           stage: state.stage,
           subStage: state.subStage,
           furthestSubStage: state.furthestSubStage,
@@ -265,6 +269,8 @@ export function useChatSession() {
         body: JSON.stringify({
           sessionId,
           message: messageText,
+          userId: user?.id,
+          userName: user?.name,
           stage,
           subStage,
           furthestSubStage,
@@ -479,6 +485,35 @@ ${d.jobOpportunities}
     setHistory(prev => [...prev, aiMsg]);
   };
 
+  // Start a new session with a clean ID and state
+  const startNewSession = () => {
+    const newId = 'sess_' + Math.random().toString(36).substr(2, 9);
+    setSessionId(newId);
+    localStorage.setItem('careerai_session_id', newId);
+    localStorage.removeItem('careerai_state');
+    
+    setStage('PRESCREENING');
+    setSubStage('PROFILE_GATHERING');
+    setFurthestSubStage('PROFILE_GATHERING');
+    
+    const initialHistory = [
+      {
+        sender: 'ai',
+        text: "Chào bạn! Mình là CareerAI, trợ lý hướng nghiệp cá nhân của bạn. Rất vui được đồng hành cùng bạn trên hành trình định hình tương lai theo mô hình PIC (Sàng lọc - Khám phá - Lựa chọn).\n\nĐể bắt đầu, **vui lòng nhập thông tin hồ sơ học tập và kinh nghiệm của bạn** ở bảng điều khiển bên dưới để mình có cơ sở phân tích và tư vấn chính xác nhất nhé!",
+        timestamp: new Date(),
+        stage: 'PRESCREENING'
+      }
+    ];
+    setHistory(initialHistory);
+    setSelectedCriteria([]);
+    setShortlistedCareers([]);
+    setUserProposedCareers([]);
+    setSelectedCareer(null);
+    setProfileInfo({ interests: '', academic: '', skills: '', experience: '', goals: '' });
+    setExpertConsulted(false);
+    setFinalRoadmap(null);
+  };
+
   // Reset session
   const resetSession = async () => {
     localStorage.removeItem('careerai_state');
@@ -602,6 +637,7 @@ ${d.jobOpportunities}
     setFinalRoadmap,
     isLoading,
     resetSession,
+    startNewSession,
     updateSession,
     loadHistoricalSession,
     fetchUserHistory,

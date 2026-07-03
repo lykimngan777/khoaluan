@@ -164,7 +164,7 @@ export default function Home({ setActiveTab, chatState }) {
                     <button
                       onClick={() => {
                         chatState.loadHistoricalSession(item);
-                        setActiveTab(item.selectedCareer ? 'roadmap' : 'assistant');
+                        setActiveTab(item.selectedCareer ? 'roadmap' : 'assistant', true);
                       }}
                       className="px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg text-xs transition-colors flex items-center gap-0.5"
                     >
@@ -319,7 +319,7 @@ export default function Home({ setActiveTab, chatState }) {
                   chatState.loadHistoricalSession(selectedSession);
                   setShowHistoryModal(false);
                   setSelectedSession(null);
-                  setActiveTab(selectedSession.selectedCareer ? 'roadmap' : 'assistant');
+                  setActiveTab(selectedSession.selectedCareer ? 'roadmap' : 'assistant', true);
                 }}
                 className="px-5 py-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl text-xs shadow-md transition-colors"
               >
