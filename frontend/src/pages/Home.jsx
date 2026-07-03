@@ -66,7 +66,7 @@ export default function Home({ setActiveTab, chatState }) {
             onClick={() => setActiveTab('assistant')}
             className="py-3 px-8 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl text-base font-semibold shadow-lg shadow-primary-500/20 active:scale-[0.98] transition-all"
           >
-            Trò chuyện với AI
+            Bắt đầu
           </button>
           
 
