@@ -30,5 +30,30 @@
         "time": "2026-07-03T09:08:03.301Z"
       }
     ]
+  },
+  {
+    "id": "cs_1783141388765",
+    "userId": "mr5wc766tcxyf",
+    "userName": "ngan",
+    "careerName": "Chuyên viên UX/UI Designer",
+    "status": "pending",
+    "createdAt": "2026-07-04T05:03:08.765Z",
+    "acceptedAt": null,
+    "messages": [
+      {
+        "id": "msg_init",
+        "sender": "user",
+        "senderName": "ngan",
+        "text": "Tư vấn với chuyên gia",
+        "time": "2026-07-04T05:03:08.765Z"
+      },
+      {
+        "id": "msg_pending_notice",
+        "sender": "expert",
+        "senderName": "Hệ thống",
+        "text": "Hệ thống đã gửi yêu cầu của bạn đến chuyên gia. Vui lòng chờ chuyên gia chấp nhận kết nối trong giây lát...",
+        "time": "2026-07-04T05:03:08.765Z"
+      }
+    ]
   }
 ]

@@ -22,5 +22,12 @@
     "email": "a@gmail.com",
     "password": "$2b$10$PCvHwViF9ny9cu0QkFSqluY8KDQG5ECWzPjwKsl/wuaLnNskgTt6.",
     "createdAt": "2026-07-02T05:17:33.173Z"
+  },
+  {
+    "id": "mr5wc766tcxyf",
+    "name": "ngan",
+    "email": "ngan@gmail.com",
+    "password": "$2b$10$xPCnnHRngyJnqiNg2hsfAeId/7ikbItFzD06FHOiF73YZ6P5OaIdG",
+    "createdAt": "2026-07-04T05:03:00.948Z"
   }
 ]

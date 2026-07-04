@@ -58,24 +58,173 @@
   },
   {
     "id": "sess_9u9qc0je3",
-    "userId": "expert_001",
-    "userName": "Chuyên gia Hướng nghiệp",
-    "stage": "PRESCREENING",
-    "subStage": "TEST",
+    "userId": "mr5wc766tcxyf",
+    "userName": "ngan",
+    "stage": "CHOICE",
+    "subStage": "GENERATE_ROADMAP",
     "history": [
       {
         "sender": "ai",
         "text": "Chào bạn! Mình là CareerAI, trợ lý hướng nghiệp cá nhân của bạn. Rất vui được đồng hành cùng bạn trên hành trình định hình tương lai theo mô hình PIC (Sàng lọc - Khám phá - Lựa chọn).\n\nĐể bắt đầu, **vui lòng nhập thông tin hồ sơ học tập và kinh nghiệm của bạn** ở bảng điều khiển bên dưới để mình có cơ sở phân tích và tư vấn chính xác nhất nhé!",
-        "timestamp": "2026-07-03T10:35:17.060Z",
+        "timestamp": "2026-07-04T04:53:09.422Z",
         "stage": "PRESCREENING"
+      },
+      {
+        "sender": "user",
+        "text": "Sở thích cá nhân cốt lõi: Công nghệ. Ngành học/Trình độ: CNTT năm 3. Năng lực cá nhân: Kỹ năng kỹ thuật lập trình Python. Học lực/Kinh nghiệm: Học lực Giỏi (GPA 3.4). Rào cản/Hạn chế: Không. Mục tiêu: Lương 20tr+.",
+        "timestamp": "2026-07-04T04:55:27.369Z",
+        "stage": "PRESCREENING"
+      },
+      {
+        "sender": "ai",
+        "text": "Cảm ơn bạn đã cung cấp hồ sơ cá nhân chi tiết! Mình đã ghi nhận các thông tin về sở thích, ngành học, kỹ năng, học lực/kinh nghiệm và mục tiêu của bạn.\n\nBây giờ, **bạn đã có sẵn danh sách các ngành nghề mà mình đang quan tâm hay chưa?**\n*(Hãy bấm nút lựa chọn bên dưới để chúng ta bắt đầu nhé!)*",
+        "timestamp": "2026-07-04T04:55:27.960Z",
+        "stage": "PRESCREENING"
+      },
+      {
+        "sender": "user",
+        "text": "Đã có danh sách nghề quan tâm rồi",
+        "timestamp": "2026-07-04T04:55:29.963Z",
+        "stage": "PRESCREENING"
+      },
+      {
+        "sender": "ai",
+        "text": "Tuyệt vời! Việc bạn đã xác định được một vài hướng đi là điểm khởi đầu rất tốt. **Hãy liệt kê từ 3 đến 5 ngành nghề** bạn đang quan tâm nhất hiện tại (phân cách bằng dấu phẩy nhé).\n\n*Ví dụ: Kỹ sư Phần mềm, Phân tích dữ liệu, Thiết kế Đồ họa.*\n\n*(Lưu ý: Bạn cần liệt kê từ 3 đến 5 nghề để sàng lọc PIC hiệu quả nhất. Hệ thống hỗ trợ tối đa 5 nghề tự chọn).*",
+        "timestamp": "2026-07-04T04:55:30.084Z",
+        "stage": "PRESCREENING"
+      },
+      {
+        "sender": "user",
+        "text": "UX/UI Designer, Data Analyst, Product Manager",
+        "timestamp": "2026-07-04T04:55:35.211Z",
+        "stage": "PRESCREENING"
+      },
+      {
+        "sender": "ai",
+        "text": "Cảm ơn bạn. Mình đã lưu lại danh sách **3 nghề** bạn tự đề xuất:\n1. UX/UI Designer\n2. Data Analyst\n3. Product Manager\n\n**Bạn có muốn hệ thống gợi ý thêm một số ngành nghề phù hợp khác** dựa trên sở thích và năng lực của bạn để tăng thêm lựa chọn không?",
+        "timestamp": "2026-07-04T04:55:35.494Z",
+        "stage": "PRESCREENING"
+      },
+      {
+        "sender": "user",
+        "text": "Có, gợi ý thêm nghề cho tôi",
+        "timestamp": "2026-07-04T04:55:37.690Z",
+        "stage": "PRESCREENING"
+      },
+      {
+        "sender": "ai",
+        "text": "Tuyệt vời! Vì đã có thông tin hồ sơ của bạn, chúng ta sẽ bắt đầu bước chọn tiêu chí. **Hãy chọn các tiêu chí nghề nghiệp quan trọng nhất với bạn** ở bảng tiêu chí. Sau khi chọn xong, bạn hãy nhắn 'Đã chọn xong' nhé!",
+        "timestamp": "2026-07-04T04:55:37.833Z",
+        "stage": "PRESCREENING"
+      },
+      {
+        "sender": "user",
+        "text": "Đã hoàn thành khảo sát tiêu chí:\n\n• **Yêu cầu thể chất** (Mức độ quan trọng: 5/10): Làm việc chân tay nặng nhọc, yêu cầu sức khoẻ bền bỉ\n• **Ít áp lực** (Mức độ quan trọng: 5/10): Sẵn sàng chịu áp lực cao nếu đi kèm đãi ngộ tương xứng\n• **Linh hoạt** (Mức độ quan trọng: 5/10): Giờ giấc tự do, đo lường bằng kết quả công việc",
+        "timestamp": "2026-07-04T04:55:54.203Z",
+        "stage": "PRESCREENING"
+      },
+      {
+        "sender": "ai",
+        "text": "### ⚖️ Áp dụng Mô hình Loại trừ Tuần tự (Sequential-Elimination Model)\n\nDựa trên thông tin hồ sơ của bạn và các điểm số khảo sát tiêu chí quan trọng, CareerAI đã tiến hành sàng lọc các ngành nghề qua 3 bộ lọc loại trừ cốt lõi:\n\n1. **Bộ lọc 1: Loại bỏ theo Rào cản/Hạn chế khách quan (Objective Constraints):**\n   * Ghi nhận rào cản: *\"Không\"*.\n   * *Đã loại bỏ:* Các nghề đòi hỏi di chuyển liên tục, đứng lâu hoặc thể chất nặng nhọc nếu có rào cản sức khỏe/địa lý/đi lại.\n2. **Bộ lọc 2: Loại bỏ theo Năng lực cá nhân (Personal Competencies):**\n   * Năng lực của bạn: *\"Chưa rõ\"* (Học lực/Kinh nghiệm: *\"Chưa rõ\"*).\n   * *Đã loại bỏ:* Các nghề yêu cầu kỹ thuật/toán học chuyên sâu nếu bạn chưa tích lũy đủ hoặc năng lực mảng này ở mức thấp.\n3. **Bộ lọc 3: Sắp xếp theo Sở thích cốt lõi (Core Preferences) & Mức độ quan trọng:**\n   * Sở thích cốt lõi: *\"Chưa rõ\"* / Mục tiêu: *\"Chưa rõ\"*.\n   * Tiêu chí ưu tiên đã chọn: **Yêu cầu thể chất, Ít áp lực, Linh hoạt**.\n\n---\n\n🌟 **Kết quả sau loại trừ: Top 5 ngành nghề triển vọng nhất dành cho bạn:**\n\n1. **Kỹ sư Phần mềm (Software Engineer)**: Phù hợp nhất với năng lực tư duy logic/kỹ thuật, thỏa mãn tiêu chí thu nhập cao và làm việc văn phòng/remote linh hoạt (tránh được rào cản thể chất).\n2. **Chuyên viên Marketing Số (Digital Marketer)**: Tận dụng tốt khả năng sáng tạo ý tưởng và giao tiếp, đáp ứng nhu cầu việc làm năng động.\n3. **Nhà Thiết kế UX/UI (UX/UI Designer)**: Giao thoa hoàn hảo giữa năng lực sáng tạo mỹ thuật và ứng dụng kỹ thuật số, ít rào cản di chuyển vật lý.\n4. **Chuyên viên Phân tích Dữ liệu (Data Analyst)**: Phù hợp với năng lực toán học/phân tích và mục tiêu thu nhập ổn định.\n5. **Quản lý Sản phẩm Công nghệ (Product Manager)**: Tối ưu khả năng giao tiếp và định hướng chiến lược kinh doanh.\n\nBạn hãy chọn các ngành nghề mong muốn đưa vào **Danh sách rút gọn (Shortlist - từ 3 đến 5 nghề)** ở bảng điều khiển bên phải/bên dưới, sau đó bấm xác nhận nhé!",
+        "timestamp": "2026-07-04T04:55:54.479Z",
+        "stage": "PRESCREENING"
+      },
+      {
+        "sender": "user",
+        "text": "Xác nhận shortlist: UX/UI Designer, Data Analyst, Chuyên viên AI/ML",
+        "timestamp": "2026-07-04T04:56:06.762Z",
+        "stage": "PRESCREENING"
+      },
+      {
+        "sender": "ai",
+        "text": "Đã lưu danh sách rút gọn gồm các nghề: **UX/UI Designer, Data Analyst, Chuyên viên AI/ML**.\n\nChúng ta cùng chuyển sang **Giai đoạn 2: Khám phá chuyên sâu**. Mình sẽ phân tích chi tiết xu hướng, mức lương, khoảng cách năng lực và ưu/nhược điểm của từng nghề đối với bạn. Bạn hãy bấm nút 'Xem chi tiết khám phá' hoặc nhắn 'Xem chi tiết' nhé!",
+        "timestamp": "2026-07-04T04:56:07.028Z",
+        "stage": "IN_DEPTH"
+      },
+      {
+        "sender": "user",
+        "text": "Xem chi tiết khám phá chuyên sâu",
+        "timestamp": "2026-07-04T04:56:10.136Z",
+        "stage": "IN_DEPTH"
+      },
+      {
+        "sender": "ai",
+        "text": "## 🔍 Giai đoạn 2: Khám phá chuyên sâu (In-depth Exploration)\n\nChào bạn, tại giai đoạn này chúng ta sẽ **\"phóng to\" (Zoom-in)** vào từng nghề nghiệp thuộc danh sách rút gọn để kiểm chứng thông qua **2 tiêu chuẩn bắt buộc**: **Tính phù hợp (Fit)** và **Tính khả thi (Feasibility & Skill Gap)**.\n\n---\n### 💼 Nghề nghiệp thứ 1: **UX/UI Designer**\n\n#### 📋 1. Mô tả công việc:\nNghiên cứu hành vi người dùng, thiết kế giao diện (UI) và trải nghiệm sử dụng (UX) cho các sản phẩm số (app, website, phần mềm). Tạo wireframe, prototype và làm việc chặt chẽ với team phát triển.\n\n#### 🌅 2. Một ngày làm việc điển hình:\nSáng: phỏng vấn người dùng hoặc phân tích heatmap/feedback. Trưa: thiết kế wireframe/mockup trên Figma. Chiều: trình bày thiết kế với PM và Developer để nhận feedback. Tối: chỉnh sửa và bàn giao file.\n\n#### 💰 3. Mức lương tham khảo:\n14 - 28 triệu VNĐ/tháng.\n\n#### 🚀 4. Triển vọng nghề nghiệp:\nLộ trình: Junior Designer → Senior UX/UI (3-5 năm) → Lead Designer → UX Director hoặc Product Designer tại các công ty lớn. Cơ hội làm freelance với dự án quốc tế rất cao.\n\n#### 🛠️ 5. Kỹ năng cần có:\nSKILLGAP::Figma:0|Adobe XD:0|User Research:0|Wireframing:0|HTML/CSS:0|Design System:0|Photoshop/AI:0\n* **Ghi chú:** Năng lực hiện tại của bạn: *\"Chưa rõ\"* — Trình độ: *\"Chưa rõ\"*, Kinh nghiệm: *\"Chưa rõ\"*.\n* **Khoảng cách kỹ năng cần bù đắp:** Cần xây dựng Portfolio sản phẩm thực tế hoàn chỉnh, bổ sung kiến thức cơ bản về HTML/CSS để làm việc cùng Developer.\n\n#### 🏢 6. Cơ hội việc làm tại Việt Nam:\nNhu cầu tăng nhanh: khoảng 5.000-7.000 tin tuyển dụng/tháng. Startup và công ty công nghệ đặc biệt có nhu cầu cao, ưu tiên ứng viên có portfolio thực tế ấn tượng.\n\n#### 📌 7. Khía cạnh cốt lõi của nghề (Core aspects):\n* **Đặc thù bắt buộc:** Cân bằng giữa thẩm mỹ cá nhân và trải nghiệm của người dùng thực tế, nhận phản hồi và chỉnh sửa thiết kế liên tục từ khách hàng/PM.\n* **Đánh giá rào cản:** Rào cản ghi nhận: *\"Không\"*. Nghề này được đánh giá là ít/có thể khắc phục bởi rào cản trên.\n\n⚖️ **Phán quyết sơ bộ:** **Cao. Phát huy tốt sự sáng tạo và kỹ năng kỹ thuật thiết kế của bạn.**\n*(Nếu bạn sẵn lòng chấp nhận các \"Khía cạnh cốt lõi\" của nghề, hãy giữ lại cho Giai đoạn 3: Lựa chọn)*\n\n---\n\n### 💼 Nghề nghiệp thứ 2: **Data Analyst**\n\n#### 📋 1. Mô tả công việc:\nThu thập, làm sạch, phân tích và trực quan hóa dữ liệu để tạo ra các insight hỗ trợ quyết định kinh doanh. Data Analyst làm việc với SQL, Python và các công cụ BI như Power BI, Tableau.\n\n#### 🌅 2. Một ngày làm việc điển hình:\nSáng: trích xuất và làm sạch dữ liệu từ database (SQL). Trưa: xây dựng báo cáo/dashboard trên Power BI. Chiều: phân tích xu hướng và trình bày insight với ban quản lý. Cuối ngày: tự động hóa báo cáo định kỳ.\n\n#### 💰 3. Mức lương tham khảo:\n15 - 30 triệu VNĐ/tháng.\n\n#### 🚀 4. Triển vọng nghề nghiệp:\nLộ trình: Junior Analyst → Senior Analyst (2-4 năm) → Data Scientist/ML Engineer hoặc Business Intelligence Manager (5-7 năm). Ngành tài chính, ngân hàng và e-commerce trả lương rất cạnh tranh.\n\n#### 🛠️ 5. Kỹ năng cần có:\nSKILLGAP::Python:0|SQL:0|Power BI:0|Excel nâng cao:0|Tableau:0|Statistics:0|Machine Learning:0\n* **Ghi chú:** Năng lực hiện tại của bạn: *\"Chưa rõ\"* — Trình độ: *\"Chưa rõ\"*, Kinh nghiệm: *\"Chưa rõ\"*.\n* **Khoảng cách kỹ năng cần bù đắp:** Cần cải thiện tư duy phân tích bài toán kinh doanh thực tế (Business Domain Knowledge), kỹ năng làm sạch dữ liệu lớn.\n\n#### 🏢 6. Cơ hội việc làm tại Việt Nam:\nNhu cầu rất cao và tiếp tục tăng: hơn 6.000 tin/tháng, tập trung nhiều ở lĩnh vực Fintech, E-commerce và FMCG. Nhân sự giỏi SQL + Python đang được săn đón mạnh.\n\n#### 📌 7. Khía cạnh cốt lõi của nghề (Core aspects):\n* **Đặc thù bắt buộc:** Làm việc chi tiết với các bảng số liệu khổng lồ, đòi hỏi tính tỉ mỉ chính xác tuyệt đối, kỹ năng thuyết trình truyền tải insight phức tạp thành đơn giản.\n* **Đánh giá rào cản:** Rào cản ghi nhận: *\"Không\"*. Nghề này được đánh giá là ít/có thể khắc phục bởi rào cản trên.\n\n⚖️ **Phán quyết sơ bộ:** **Khá tốt. Tận dụng được tư duy phân tích số liệu.**\n*(Nếu bạn sẵn lòng chấp nhận các \"Khía cạnh cốt lõi\" của nghề, hãy giữ lại cho Giai đoạn 3: Lựa chọn)*\n\n---\n\n### 💼 Nghề nghiệp thứ 3: **Chuyên viên AI/ML**\n\n#### 📋 1. Mô tả công việc:\nỨng dụng kiến thức chuyên ngành để giải quyết các bài toán thực tế, phối hợp với các bộ phận liên quan và đóng góp vào mục tiêu chung của tổ chức.\n\n#### 🌅 2. Một ngày làm việc điển hình:\nThực hiện các nhiệm vụ chuyên môn theo kế hoạch, họp với team để cập nhật tiến độ, xử lý các vấn đề phát sinh và báo cáo kết quả cho quản lý.\n\n#### 💰 3. Mức lương tham khảo:\n12 - 22 triệu VNĐ/tháng.\n\n#### 🚀 4. Triển vọng nghề nghiệp:\nLộ trình phát triển từ vị trí thực tập/fresher lên chuyên viên, senior và quản lý trong vòng 4-7 năm tùy nỗ lực và môi trường làm việc.\n\n#### 🛠️ 5. Kỹ năng cần có:\nSKILLGAP::Kỹ năng chuyên môn:0|Giao tiếp:0|Tin học văn phòng:0|Ngoại ngữ:0|Tự học/Nghiên cứu:0\n* **Ghi chú:** Năng lực hiện tại của bạn: *\"Chưa rõ\"* — Trình độ: *\"Chưa rõ\"*, Kinh nghiệm: *\"Chưa rõ\"*.\n* **Khoảng cách kỹ năng cần bù đắp:** Cần bồi dưỡng portfolio dự án cá nhân thực tế để chứng minh năng lực với nhà tuyển dụng.\n\n#### 🏢 6. Cơ hội việc làm tại Việt Nam:\nNhu cầu tuyển dụng ổn định và tăng đều theo sự phát triển của nền kinh tế số tại Việt Nam.\n\n#### 📌 7. Khía cạnh cốt lõi của nghề (Core aspects):\n* **Đặc thù bắt buộc:** Đòi hỏi tính kiên trì học hỏi công cụ chuyên ngành, phối hợp làm việc nhóm và giao tiếp tốt dưới áp lực.\n* **Đánh giá rào cản:** Rào cản ghi nhận: *\"Không\"*. Nghề này được đánh giá là ít/có thể khắc phục bởi rào cản trên.\n\n⚖️ **Phán quyết sơ bộ:** **Khá khả thi. Khớp với mục tiêu phát triển bản thân của bạn.**\n*(Nếu bạn sẵn lòng chấp nhận các \"Khía cạnh cốt lõi\" của nghề, hãy giữ lại cho Giai đoạn 3: Lựa chọn)*\n\nBạn có thể đặt thêm câu hỏi tự do cho AI về các phân tích trên. Khi đã sẵn sàng, hãy bấm nút **\"Chuyển sang Giai đoạn 3\"** ở bảng điều khiển bên dưới để lập Ma trận quyết định nhé!",
+        "timestamp": "2026-07-04T04:56:10.265Z",
+        "stage": "IN_DEPTH"
+      },
+      {
+        "sender": "user",
+        "text": "Chuyển sang Giai đoạn 3",
+        "timestamp": "2026-07-04T04:56:27.320Z",
+        "stage": "IN_DEPTH"
+      },
+      {
+        "sender": "ai",
+        "text": "## 🎯 Giai đoạn 3: Lựa chọn (Choice)\n      \nChào mừng bạn đến với bước cuối cùng trong mô hình PIC. Chúng ta sẽ tiến hành so sánh, đối chiếu kết quả xếp hạng logic của hệ thống với **trực giác (intuition)** của bạn để đưa ra quyết định vững vàng nhất.\n\n### 📊 Ma trận quyết định (Decision Matrix) so sánh mức độ phù hợp:\n\n| Hạng | Nghề nghiệp | Tiêu chí phù hợp | Cơ hội thị trường | Mức độ hứng thú | **Điểm tổng hợp** |\n| :---: | :--- | :---: | :---: | :---: | :---: |\n| 1 | UX/UI Designer | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | **9.5/10** |\n| 2 | Data Analyst | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | **9.1/10** |\n| 3 | Chuyên viên AI/ML | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | **8.7/10** |\n\n### 📊 Bảng so sánh chi tiết theo tiêu chí:\n\n| Tiêu chí | **UX/UI Designer** | **Data Analyst** | **Chuyên viên AI/ML** |\n| :--- | :---: | :---: | :---: |\n| **Yêu cầu thể chất** | ⭐ (Rất thấp) | ⭐ (Rất thấp) | ⭐⭐ (Thấp) |\n| **Ít áp lực** | ⭐⭐⭐ (Trung bình) | ⭐⭐⭐ (Trung bình) | ⭐⭐⭐ (Trung bình) |\n| **Linh hoạt** | ⭐⭐⭐⭐⭐ (Rất cao) | ⭐⭐⭐⭐ (Cao) | ⭐⭐ (Thấp) |\n\nBạn hãy nhận xét xem bảng xếp hạng logic này có khớp với **trực giác/mong muốn thực tế** của bạn không? Bạn hãy click chọn nghề nghiệp mục tiêu chính thức bên dưới để bắt đầu lập lộ trình chi tiết nhé!",
+        "timestamp": "2026-07-04T04:56:27.668Z",
+        "stage": "CHOICE"
+      },
+      {
+        "sender": "user",
+        "text": "Tôi chọn UX/UI Designer làm nghề mục tiêu",
+        "timestamp": "2026-07-04T04:56:34.753Z",
+        "stage": "CHOICE"
+      },
+      {
+        "sender": "ai",
+        "text": "Lộ trình phát triển năng lực cá nhân hóa cho mục tiêu **UX/UI Designer** đã được thiết lập thành công!\n\nBạn có thể sang tab **Bảng lộ trình** để xem chi tiết lộ trình 6-12 tháng, bao gồm danh sách các khóa học trực tuyến cụ thể và chứng chỉ cần thiết.\n\nNgoài ra, bạn có muốn **kết nối với chuyên gia hướng nghiệp** để nhận thêm lời khuyên bổ sung, hay bạn muốn tự điều chỉnh lộ trình học tập này?",
+        "timestamp": "2026-07-04T04:56:35.152Z",
+        "stage": "CHOICE"
       }
     ],
-    "selectedCriteria": [],
-    "shortlistedCareers": [],
-    "selectedCareer": null,
+    "selectedCriteria": [
+      "Yêu cầu thể chất",
+      "Ít áp lực",
+      "Linh hoạt"
+    ],
+    "shortlistedCareers": [
+      "UX/UI Designer",
+      "Data Analyst",
+      "Chuyên viên AI/ML"
+    ],
+    "selectedCareer": "UX/UI Designer",
     "profileInfo": {},
-    "finalRoadmap": null,
-    "updatedAt": "2026-07-03T10:45:57.909Z"
+    "finalRoadmap": {
+      "careerName": "Chuyên viên UX/UI Designer",
+      "summary": "Lộ trình phát triển năng lực toàn diện cho nghề UX/UI Designer tối ưu theo hồ sơ cá nhân.",
+      "milestones": [
+        {
+          "phase": "Giai đoạn 1 (Tháng 1-3): Tư duy căn bản & Kiến thức nền tảng",
+          "desc": "Tìm hiểu các khái niệm cơ bản về nghề UX/UI Designer và công cụ cần thiết."
+        },
+        {
+          "phase": "Giai đoạn 2 (Tháng 4-6): Thực hành công cụ chuyên môn",
+          "desc": "Thực hành sử dụng các phần mềm, công cụ hỗ trợ và phân tích dữ liệu chuyên ngành."
+        },
+        {
+          "phase": "Giai đoạn 3 (Tháng 7-12): Xây dựng Portfolio & Dự án thực tế",
+          "desc": "Tham gia các dự án mẫu, thực tập bán thời gian để tích lũy kinh nghiệm cọ xát thực tế."
+        }
+      ],
+      "courses": [
+        {
+          "title": "Introduction to UX/UI Designer Specialization",
+          "provider": "Coursera",
+          "url": "https://www.coursera.org/search?query=Introduction%20to%20UX%2FUI%20Designer%20Specialization"
+        },
+        {
+          "title": "Complete UX/UI Designer bootcamp 2026",
+          "provider": "Udemy",
+          "url": "https://www.udemy.com/courses/search/?q=Complete%20UX%2FUI%20Designer%20bootcamp"
+        }
+      ],
+      "certificates": [
+        "Google Professional Certificate for UX/UI Designer",
+        "Professional Industry Certification"
+      ]
+    },
+    "updatedAt": "2026-07-04T05:03:07.521Z"
   },
   {
     "id": "sess_rbhg1j7o9",
